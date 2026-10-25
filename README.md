@@ -4,7 +4,7 @@ Phát hiện trạng thái **fallen** (đã ngã, chưa dậy được) từ vid
 [OmniFall](https://arxiv.org/abs/2505.19889): kiểm toán và tiền xử lý dữ liệu, Transition-Conditioning,
 đánh giá streaming và một ứng dụng giám sát realtime.
 
-Nhóm: Nguyễn Duy Quân · Cao Văn Mai · Nguyễn Bá Nhất Tâm · Phạm Thanh Sơn — FPT University.
+Nhóm: Nguyễn Duy Quân · Phạm Tuấn Vỹ · Nghiêm Thị Thu Huyền · Vũ Hoàng Anh — FPT University.
 
 ## Kết quả chính (OF-ItW test, 572 video, chạy streaming như camera thật)
 
