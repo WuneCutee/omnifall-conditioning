@@ -1,0 +1,4 @@
+input,data,lambda,val_score,test_fallen,test_fallen_sd,test_fall,test_fall_sd,test_union,test_union_sd
+rule_paper,stsyn,0.0,46.88,30.58,2.53,45.57,1.56,57.94,0.52
+rule_paper,stsyn,0.3,46.42,31.5,0.72,45.73,0.57,57.27,0.83
+rule_paper,stsyn,1.0,47.15,30.74,0.51,44.31,0.27,56.71,0.38

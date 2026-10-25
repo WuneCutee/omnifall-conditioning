@@ -1,0 +1,19 @@
+so sánh (B vs baseline crop giữa),thước đo,Δfallen_f1,fallen_f1 CI95,Δfall_f1,fall_f1 CI95,Δunion_f1,union_f1 CI95,McNemar union: chỉ A đúng,chỉ B đúng,p
+"Rule τ=4,W=10 (bài báo)",theo segment,2.48,"[-1.0, +6.2]",0.0,"[+0.0, +0.0]",-0.21,"[-1.6, +1.2]",158.0,65.0,7.2e-10
+Hybrid v8 seed42,theo segment,6.67,"[+2.6, +10.8]",-0.63,"[-2.1, +0.9]",1.57,"[-0.0, +3.1]",130.0,106.0,0.13
+Hybrid v8 seed43,theo segment,5.52,"[+1.8, +9.4]",0.93,"[-0.7, +2.5]",0.91,"[-0.6, +2.5]",146.0,103.0,0.0078
+Hybrid v8 seed44,theo segment,7.5,"[+3.4, +11.6]",-1.46,"[-3.4, +0.4]",-0.02,"[-1.8, +1.7]",156.0,119.0,0.03
+Fine-tune ItW seed42 (crop giữa),theo segment,14.8,"[+8.9, +20.8]",14.86,"[+11.8, +17.9]",10.07,"[+7.5, +12.7]",288.0,356.0,0.0083
+Fine-tune ItW seed43 (crop giữa),theo segment,19.7,"[+13.8, +25.4]",13.59,"[+10.5, +16.7]",10.56,"[+7.9, +13.2]",264.0,372.0,2.2e-05
+Fine-tune ItW seed44 (crop giữa),theo segment,18.96,"[+13.5, +24.3]",13.4,"[+10.4, +16.3]",9.75,"[+7.0, +12.4]",238.0,351.0,3.9e-06
+"[stream] rule τ=4,W=3,hop=1.0 | spatial",streaming @2.2s,1.7,"[-1.5, +4.9]",-2.29,"[-3.6, -1.0]",-0.14,"[-1.7, +1.5]",,,
+"[stream] hmm hop=0.5,γ=0.5,s=1.0 | timefix",streaming @2.2s,6.37,"[+2.7, +10.1]",-12.49,"[-14.8, -10.4]",-6.91,"[-9.2, -4.7]",,,
+[stream] hybrid v8 seed42 hop=1.0 | spatial,streaming @2.2s,5.5,"[+1.8, +9.4]",-6.56,"[-8.3, -4.9]",-2.68,"[-4.6, -0.7]",,,
+[stream] hybrid v8 seed43 hop=1.0 | spatial,streaming @2.2s,4.26,"[+0.2, +8.3]",-6.53,"[-8.4, -4.8]",-2.79,"[-4.8, -0.8]",,,
+[stream] hybrid v8 seed44 hop=1.0 | spatial,streaming @2.2s,5.65,"[+1.6, +9.7]",-11.72,"[-14.0, -9.6]",-5.56,"[-7.8, -3.4]",,,
+[stream_ft] baseline | spatial,streaming @2.2s,1.94,"[+0.6, +3.4]",0.42,"[-0.5, +1.3]",0.72,"[-0.0, +1.5]",,,
+"[stream_ft] rule τ=1,W=5,hop=0.5 | spatial",streaming @2.2s,3.52,"[+1.2, +5.9]",1.55,"[+0.5, +2.6]",1.65,"[+0.6, +2.7]",,,
+"[stream_ft] hmm hop=0.5,γ=4,s=1.0 | timefix",streaming @2.2s,3.43,"[+0.4, +6.5]",-7.07,"[-9.3, -4.9]",-5.41,"[-7.3, -3.5]",,,
+[stream_ft] hybrid v8 seed42 hop=1.0 | spatial,streaming @2.2s,6.15,"[+3.1, +9.2]",-2.87,"[-4.8, -1.0]",-0.08,"[-1.6, +1.4]",,,
+[stream_ft] hybrid v8 seed43 hop=1.0 | timefix,streaming @2.2s,3.57,"[+0.4, +6.8]",-1.89,"[-3.3, -0.5]",-0.85,"[-2.3, +0.6]",,,
+[stream_ft] hybrid v8 seed44 hop=1.0 | spatial,streaming @2.2s,4.9,"[+1.7, +8.2]",-8.22,"[-10.6, -5.9]",-3.61,"[-5.5, -1.8]",,,

@@ -1,0 +1,16 @@
+timestamp,elapsed_seconds,mode,label
+2026-09-16T11:24:15,22.16,rule_based,fallen
+2026-09-16T11:24:15,22.16,hybrid,fallen
+2026-09-16T11:24:16,23.22,rule_based,fallen
+2026-09-16T11:24:16,23.22,hybrid,fallen
+2026-09-16T11:24:16,23.49,rule_based,fallen
+2026-09-16T11:24:16,23.49,hybrid,fallen
+2026-09-16T11:24:21,27.09,rule_based,fallen
+2026-09-16T11:24:21,27.09,hybrid,fallen
+2026-09-16T11:24:22,27.89,rule_based,fallen
+2026-09-16T11:24:22,27.89,hybrid,fallen
+2026-09-16T11:24:23,28.70,rule_based,fallen
+2026-09-16T11:24:23,28.70,hybrid,fallen
+2026-09-16T11:24:26,31.36,hybrid,fallen
+2026-09-16T11:24:26,31.77,rule_based,fallen
+2026-09-16T11:24:26,31.77,hybrid,fallen

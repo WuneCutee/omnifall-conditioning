@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>OmniFall Project Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,650&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: A4 technical report — one text column, figures full width, tables in the subject's units;
+   same identity as the deck: slate ink on cool paper, status colours fall = amber, fallen = red. */
+:root {
+  --paper: #FFFFFF; --tint: #EEF3F2; --ink: #12222A; --muted: #56676D; --line: #CFDAD9;
+  --teal: #1C6E69; --blue: #2D5C86; --amber: #B97A16; --red: #C5413A; --night: #0D1C22;
+  --f-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --f-body: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, monospace;
+}
+@page { size: A4; margin: 17mm 17mm 18mm 17mm; }
+@page :first { margin: 0; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: var(--f-body); color: var(--ink); background: var(--paper); font-size: 10.2pt; line-height: 1.55; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 650; text-wrap: balance; margin: 0; letter-spacing: -0.005em; }
+h2 { font-size: 20pt; line-height: 1.15; margin: 0 0 10pt; }
+h2 .num { font-family: var(--f-mono); font-size: 10pt; color: var(--teal); display: block; letter-spacing: .08em; margin-bottom: 4pt; font-weight: 600; }
+h3 { font-size: 12.5pt; margin: 14pt 0 5pt; }
+p { margin: 0 0 7pt; }
+.lead { font-size: 11.4pt; line-height: 1.5; color: var(--ink); }
+section.chap { break-before: page; }
+section.chap.cont { break-before: auto; margin-top: 22pt; }
+.mono, code { font-family: var(--f-mono); font-size: 8.6pt; }
+code { background: var(--tint); padding: 0.5pt 3pt; border-radius: 2pt; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 8.9pt; font-variant-numeric: tabular-nums; break-inside: avoid; }
+th { text-align: left; font-family: var(--f-mono); font-weight: 400; font-size: 7.4pt; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); border-bottom: 1.2pt solid var(--ink); padding: 0 6pt 4pt 0; vertical-align: bottom; }
+td { padding: 4pt 6pt 4pt 0; border-bottom: 0.6pt solid var(--line); vertical-align: top; }
+td.n, th.n { text-align: right; }
+tr.hl td { color: var(--teal); font-weight: 600; }
+tr.warn td { color: var(--red); }
+figure { margin: 8pt 0 12pt; break-inside: avoid; }
+figure img { width: 100%; display: block; border: 0.6pt solid var(--line); border-radius: 3pt; }
+figcaption { font-size: 8.4pt; color: var(--muted); margin-top: 4pt; line-height: 1.4; }
+figcaption b { color: var(--ink); }
+.note { font-size: 8.5pt; color: var(--muted); }
+.callout { background: var(--tint); border-radius: 4pt; padding: 9pt 12pt; margin: 8pt 0 12pt; break-inside: avoid; }
+.callout b.t { font-family: var(--f-mono); font-size: 7.6pt; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); display: block; margin-bottom: 3pt; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; margin: 10pt 0 12pt; break-inside: avoid; }
+.kpi { border: 0.6pt solid var(--line); border-radius: 4pt; padding: 8pt 10pt; }
+.kpi .v { font-family: var(--f-display); font-size: 20pt; font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: 7.8pt; color: var(--muted); margin-top: 4pt; line-height: 1.35; }
+ol, ul { margin: 0 0 8pt; padding-left: 15pt; } li { margin: 2pt 0; }
+.t-red { color: var(--red); } .t-teal { color: var(--teal); } .t-amber { color: var(--amber); } .t-blue { color: var(--blue); }
+pre { font-family: var(--f-mono); font-size: 8pt; background: var(--tint); padding: 8pt 10pt; border-radius: 3pt; white-space: pre-wrap; margin: 4pt 0 10pt; break-inside: avoid; }
+
+/* cover */
+.cover { height: 297mm; width: 210mm; background: var(--night); color: #E6EFEE; padding: 26mm 22mm 20mm; display: flex; flex-direction: column; break-after: page; }
+.cover .eb { font-family: var(--f-mono); font-size: 9pt; letter-spacing: .1em; text-transform: uppercase; color: #6FC3B8; }
+.cover h1 { font-size: 38pt; line-height: 1.04; margin-top: 30mm; }
+.cover h1 em { font-style: normal; color: #F0897F; }
+.cover .sub { font-size: 13pt; line-height: 1.45; color: #A9BDC0; margin-top: 8mm; max-width: 150mm; }
+.cover .strip { display: grid; grid-template-columns: 0.91fr 0.94fr 0.66fr 1.24fr 2.5fr; gap: 2mm; margin-top: auto; }
+.cover .seg { height: 11mm; border-radius: 2mm; font-family: var(--f-mono); font-size: 8pt; display: flex; align-items: center; padding: 0 3mm; color: var(--night); }
+.cover .cap { font-family: var(--f-mono); font-size: 7.6pt; color: #93A9AD; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3mm; }
+.cover .meta { margin-top: 10mm; display: grid; grid-template-columns: 1.4fr 1fr; gap: 10mm; font-size: 9.5pt; color: #C9D8DA; }
+.cover .meta b { display: block; font-family: var(--f-mono); font-weight: 400; font-size: 7.6pt; letter-spacing: .08em; text-transform: uppercase; color: #6FC3B8; margin-bottom: 2mm; }
+
+/* toc */
+.toc { columns: 2; column-gap: 12mm; font-size: 10pt; margin-top: 6pt; }
+.toc div { break-inside: avoid; display: flex; gap: 8pt; padding: 3.5pt 0; border-bottom: 0.6pt solid var(--line); }
+.toc span { font-family: var(--f-mono); color: var(--teal); width: 18pt; flex: none; font-size: 8.6pt; padding-top: 1.5pt; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eb">FPT University · Báo cáo dự án · Tháng 10/2026</div>
+  <h1>Phát hiện người <em>đã ngã</em> từ video trên OmniFall</h1>
+  <p class="sub">Transition-Conditioning, kiểm toán và tiền xử lý dữ liệu, đánh giá streaming, và ứng dụng giám sát thời gian thực. Bản dựng lại v2 của dự án.</p>
+  <div style="margin-top:auto">
+    <div class="cap">Một clip OF-ItW thật, nhãn theo giây</div>
+    <div class="strip">
+      <div class="seg" style="background:#5B7C84">other</div>
+      <div class="seg" style="background:#6FC3B8">walk</div>
+      <div class="seg" style="background:#5B7C84">other</div>
+      <div class="seg" style="background:#E3A64B">fall 2.51 s</div>
+      <div class="seg" style="background:#E0675F;color:#fff">fallen 3.75 → 11.5 s</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div><b>Nhóm thực hiện</b>Nguyễn Duy Quân · Cao Văn Mai · Nguyễn Bá Nhất Tâm · Phạm Thanh Sơn</div>
+    <div><b>Mã nguồn</b>omnifall-conditioning/<br>tcfall · pipeline · app · outputs_v2</div>
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">MỤC LỤC</span>Nội dung</h2>
+  <div class="toc">
+    <div><span>01</span>Tóm tắt</div><div><span>02</span>Bối cảnh và mục tiêu</div><div><span>03</span>Dữ liệu</div>
+    <div><span>04</span>Kiểm toán và làm sạch dữ liệu</div><div><span>05</span>Tiền xử lý video và feature</div>
+    <div><span>06</span>Phương pháp</div><div><span>07</span>Giao thức đánh giá</div><div><span>08</span>Kết quả theo segment</div>
+    <div><span>09</span>Kết quả streaming và báo động</div><div><span>10</span>Kiểm định thống kê</div><div><span>11</span>Ứng dụng realtime</div>
+    <div><span>12</span>Hệ quả đối với bài báo</div><div><span>13</span>Hạn chế và hướng tiếp theo</div><div><span>14</span>Tái lập kết quả</div>
+    <div><span>A</span>Phụ lục: cấu hình đã chọn</div>
+  </div>
+
+  <h2 style="margin-top:22pt"><span class="num">01</span>Tóm tắt</h2>
+  <p class="lead">Hệ thống tốt nhất của bản v2 đạt <b>Fallen-F1 44.3, Fall-F1 62.0, Fall∪Fallen-F1 69.3</b> khi chạy streaming như camera thật trên OF-ItW test (572 video), so với 31.9 / 45.5 / 56.8 của hệ thống cũ.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="v t-teal">+12.4</div><div class="l">điểm Fallen-F1 khi streaming</div></div>
+    <div class="kpi"><div class="v t-teal">+16.5</div><div class="l">điểm Fall-F1 khi streaming</div></div>
+    <div class="kpi"><div class="v t-red">154</div><div class="l">video bị lấy mẫu sai fps, lệch nhãn tới 2.2 s</div></div>
+    <div class="kpi"><div class="v">40–47 ms</div><div class="l">suy luận mỗi cửa sổ trong ứng dụng realtime (RTX 3070)</div></div>
+  </div>
+  <p>Hệ thống gồm classifier được tinh chỉnh trên ItW-train, trung bình 3 crop không gian (TTA) và rule-conditioning có tham số chọn trên tập val. Năm phát hiện chính:</p>
+  <ol>
+    <li><b>Tiền xử lý có lỗi thật.</b> 154/818 video OOPS 23.98 fps bị lấy mẫu ở 8 fps thay vì 7.5 fps; 104 segment trượt quá nửa thời lượng. Center-crop chỉ giữ trung vị 56% khung hình.</li>
+    <li><b>Con số baseline của bài báo (26.6) là một lần rút may.</b> Code gốc đánh giá với vị trí crop ngẫu nhiên; 10 lần rút cho 24.7 ± 0.8.</li>
+    <li><b>Đánh giá theo segment rò rỉ thông tin oracle.</b> 92.3% cặp segment ItW liền kề khác nhãn. Một bộ lọc HMM khai thác điều này đạt Fallen-F1 51.3 nhưng không triển khai được.</li>
+    <li><b>Khi streaming trên baseline St+Sy, conditioning chỉ chuyển lỗi từ Fall sang Fallen.</b> Fall∪Fallen không tăng (rule) hoặc giảm có ý nghĩa (HMM, Hybrid v8).</li>
+    <li><b>Nút thắt là classifier.</b> Fine-tune tăng cả ba chỉ số 10–20 điểm, CI 95% loại trừ 0 ở cả 3 seed; trên nền đó rule thêm +1.6 đến +3.5 điểm có ý nghĩa.</li>
+  </ol>
+</section>
+
+<section class="chap">
+  <h2><span class="num">02</span>Bối cảnh và mục tiêu</h2>
+  <p class="lead">Dự án phát hiện trạng thái <b class="t-red">fallen</b> (đã ngã, chưa dậy được) trên benchmark OmniFall theo giao thức staged → wild: huấn luyện trên dữ liệu dàn dựng (St) và tổng hợp (Sy), kiểm tra trên tai nạn thật OF-ItW.</p>
+  <p>Nằm lâu sau cú ngã ("long-lie") làm tăng mạnh tỉ lệ tử vong ở người cao tuổi, nên trạng thái sau cú ngã quan trọng hơn chính khoảnh khắc ngã. Bài báo gốc đề xuất <i>Transition-Conditioning</i>: dùng dự đoán về hành động chuyển tiếp (fall, lie_down, sit_down, stand_up) để tăng xác suất của trạng thái tĩnh theo sau trong vài giây kế tiếp.</p>
+  <h3>Mục tiêu của bản v2</h3>
+  <ul>
+    <li>Dựng lại code thành pipeline có cấu trúc (<code>tcfall/</code>, <code>pipeline/s01–s08</code>); giữ nguyên code cũ để đối chiếu.</li>
+    <li>Kiểm toán và sửa dữ liệu, tiền xử lý; đây là trọng tâm của báo cáo.</li>
+    <li>Cải thiện kết quả với mọi lựa chọn tham số trên ItW-val; test chỉ chạy một lần cho cấu hình đã chọn.</li>
+    <li>Xây ứng dụng realtime cho webcam hoặc video.</li>
+  </ul>
+  <div class="callout"><b class="t">Ràng buộc</b>Feature của OF-Syn và 3 bộ staged đã bị xoá khỏi máy, chỉ còn 818 video OOPS (2.2 GB). Vì vậy backbone baseline không được huấn luyện lại từ đầu; các bước học dùng logits train đã cache, hoặc dữ liệu ItW-train.</div>
+
+</section>
+
+<section class="chap">
+  <h2><span class="num">03</span>Dữ liệu</h2>
+  <p class="lead">Dự án dùng 5 nguồn, tổng 13.268 video và 24.933 segment có nhãn, theo taxonomy 10 lớp lõi của OmniFall.</p>
+  <table>
+    <thead><tr><th>Nguồn</th><th>Miền</th><th class="n">Video</th><th class="n">Segment</th><th class="n">Giờ</th><th class="n">Segment trung vị (s)</th><th class="n">Train / val / test (video)</th></tr></thead>
+    <tbody>
+      <tr><td>OF-Syn</td><td>Tổng hợp</td><td class="n">12.000</td><td class="n">19.228</td><td class="n">16.88</td><td class="n">3.03</td><td class="n">9.600 / 1.200 / 1.200</td></tr>
+      <tr><td>GMDCSA24</td><td>Dàn dựng</td><td class="n">160</td><td class="n">458</td><td class="n">0.36</td><td class="n">2.10</td><td class="n">75 / 48 / 37</td></tr>
+      <tr><td>Le2i</td><td>Dàn dựng</td><td class="n">190</td><td class="n">967</td><td class="n">0.79</td><td class="n">2.25</td><td class="n">133 / 19 / 38</td></tr>
+      <tr><td>CAUCAFall</td><td>Dàn dựng</td><td class="n">100</td><td class="n">258</td><td class="n">0.28</td><td class="n">2.60</td><td class="n">69 / 9 / 19</td></tr>
+      <tr class="hl"><td>OF-ItW (OOPS)</td><td>Tai nạn thật</td><td class="n">818</td><td class="n">4.022</td><td class="n">2.65</td><td class="n">1.65</td><td class="n">165 / 81 / 572</td></tr>
+    </tbody>
+  </table>
+  <p>Không có segment nào thuộc 6 lớp mở rộng (10–15), nên mô hình thực tế là 10 lớp: walk, fall, fallen, sit_down, sitting, lie_down, lying, stand_up, standing, other.</p>
+  <figure><img src="{{FIG_CLASS}}" alt="Phân bố lớp theo miền"><figcaption><b>Hình 1.</b> Phân bố lớp theo miền. OF-Syn gần cân bằng; OF-ItW có <i>other</i> 32% và <i>fall</i> 23%; lie_down và lying gần như vắng mặt ở ItW (11 và 17 segment test).</figcaption></figure>
+</section>
+
+<section class="chap">
+  <h2><span class="num">04</span>Kiểm toán và làm sạch dữ liệu</h2>
+  <p class="lead">Nhãn gần như sạch: chỉ 5 dòng bị loại. Vấn đề lớn nằm ở cấu trúc thời gian và độ dài segment.</p>
+  <h3>Quy trình làm sạch có ghi vết</h3>
+  <table>
+    <thead><tr><th>Bước</th><th>Kiểm tra</th><th class="n">Dòng bị loại</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Thiếu path / label / start / end</td><td class="n">0</td><td></td></tr>
+      <tr><td>2</td><td>end ≤ start</td><td class="n">4</td><td>OF-Syn</td></tr>
+      <tr><td>3</td><td>Trùng (path, start, end, label)</td><td class="n">1</td><td>OF-Syn</td></tr>
+      <tr><td>4</td><td>Lớp mở rộng 10–15</td><td class="n">0</td><td></td></tr>
+      <tr><td>5</td><td>Segment &lt; 0.5 s</td><td class="n">0</td><td>Không loại ở test; script cũ sẽ xoá 252 segment ItW</td></tr>
+    </tbody>
+  </table>
+  <h3>Toàn vẹn split và thời gian</h3>
+  <table>
+    <thead><tr><th>Kiểm tra</th><th class="n">OF-Syn</th><th class="n">Staged (3 bộ)</th><th class="n">OF-ItW</th></tr></thead>
+    <tbody>
+      <tr><td>Video thuộc hai split / người ở cả train và test</td><td class="n">0 / –</td><td class="n">0 / 0</td><td class="n">0 / –</td></tr>
+      <tr><td>Video có nhãn nhưng không thuộc split nào</td><td class="n">0</td><td class="n">3</td><td class="n">0</td></tr>
+      <tr><td>Cặp segment chồng lấn &gt; 10 ms</td><td class="n">38</td><td class="n">10</td><td class="n">2</td></tr>
+      <tr><td>Khoảng trống giữa segment &gt; 100 ms</td><td class="n">1</td><td class="n">11</td><td class="n">4</td></tr>
+      <tr><td>Segment &lt; 0.5 s</td><td class="n">558</td><td class="n">22</td><td class="n">252</td></tr>
+      <tr><td>Segment &gt; 10 s</td><td class="n">0</td><td class="n">45</td><td class="n">70</td></tr>
+      <tr class="warn"><td>Cặp segment liền kề cùng nhãn</td><td class="n">2.51%</td><td class="n">0.32%</td><td class="n">7.68%</td></tr>
+    </tbody>
+  </table>
+  <p>Dòng cuối là phát hiện quan trọng nhất của bước này: ở ItW, 92.3% cặp segment liền nhau khác nhãn, vì ranh giới segment chính là nơi nhãn đổi. Phần 07 cho thấy điều này làm sai lệch đánh giá theo segment.</p>
+  <h3>Cấu trúc hành động → trạng thái</h3>
+  <table>
+    <thead><tr><th>Miền</th><th class="n">Segment fallen</th><th class="n">Ngay trước là fall</th><th class="n">Có fall trước đó</th><th class="n">Khoảng cách trung vị (s)</th><th class="n">P90 (s)</th><th class="n">Trong 10 s</th></tr></thead>
+    <tbody>
+      <tr><td>Staged</td><td class="n">248</td><td class="n">100%</td><td class="n">100%</td><td class="n">2.06</td><td class="n">3.00</td><td class="n">100%</td></tr>
+      <tr><td>OF-Syn</td><td class="n">1.449</td><td class="n">87.6%</td><td class="n">87.9%</td><td class="n">1.42</td><td class="n">3.03</td><td class="n">100%</td></tr>
+      <tr class="hl"><td>OF-ItW</td><td class="n">464</td><td class="n">96.6%</td><td class="n">97.6%</td><td class="n">1.48</td><td class="n">2.63</td><td class="n">99.8%</td></tr>
+    </tbody>
+  </table>
+  <figure><img src="{{FIG_TRANS}}" alt="Ma trận chuyển tiếp nhãn"><figcaption><b>Hình 2.</b> P(nhãn kế tiếp | nhãn hiện tại) giữa 2 segment liên tiếp. Ở ItW chỉ 55% fall được nối tiếp bởi fallen (staged 98%), nhưng chiều ngược lại rất mạnh: 96.6% fallen đứng ngay sau fall.</figcaption></figure>
+</section>
+
+<section class="chap">
+  <h2><span class="num">05</span>Tiền xử lý video và feature</h2>
+  <p class="lead">Tiền xử lý cũ có hai lỗi đo được và một nguồn nhiễu khi đánh giá. Sửa chúng không tự làm baseline mạnh lên, nhưng cho một pipeline tất định, đúng thời gian và dùng chung giữa offline và realtime.</p>
+  <h3>Pipeline 12 bước</h3>
+  <table>
+    <thead><tr><th>#</th><th>Nhóm</th><th>Bước</th><th>Số đo kiểm chứng</th><th>Mã</th></tr></thead>
+    <tbody>
+      <tr><td>01</td><td>Nhãn</td><td>Nạp 5 nguồn, 24.933 segment</td><td>0 nhãn ngoài 10 lớp lõi</td><td><code>data.load_labels</code></td></tr>
+      <tr><td>02</td><td>Nhãn</td><td>Làm sạch có ghi vết</td><td>loại 5 dòng</td><td><code>data.clean_labels</code></td></tr>
+      <tr><td>03</td><td>Nhãn</td><td>Kiểm tra split, rò rỉ người/video</td><td>0 trùng split</td><td><code>s01_audit_data</code></td></tr>
+      <tr><td>04</td><td>Nhãn</td><td>Toàn vẹn thời gian</td><td>252 segment ItW &lt; 0.5 s</td><td><code>s01_audit_data</code></td></tr>
+      <tr><td>05</td><td>Nhãn</td><td>Thống kê chuyển tiếp</td><td>92.3% cặp liền kề khác lớp</td><td><code>data.transition_counts</code></td></tr>
+      <tr><td>06</td><td>Video</td><td>Đo fps, độ phân giải, bitrate</td><td>154 video 23.98 fps; 242 video dọc</td><td><code>s01b_video_audit</code></td></tr>
+      <tr class="hl"><td>07</td><td>Video</td><td>Lấy mẫu 7.5 fps theo đồng hồ</td><td>sửa lệch tới 2.18 s</td><td><code>video.sample_indices</code></td></tr>
+      <tr class="hl"><td>08</td><td>Video</td><td>Resize 224, crop trái / giữa / phải</td><td>center-crop chỉ giữ 56%</td><td><code>features.preprocess</code></td></tr>
+      <tr><td>09</td><td>Feature</td><td>VideoMAE-K400 fp16, cửa sổ 16 frame</td><td>768 chiều mỗi 0.133 s</td><td><code>features.embed_windows</code></td></tr>
+      <tr class="hl"><td>10</td><td>Feature</td><td>Segment → 18 feature, vị trí cố định</td><td>bỏ dao động ±0.8 điểm</td><td><code>segments.window_start</code></td></tr>
+      <tr><td>11</td><td>Feature</td><td>Tăng cường khi fine-tune</td><td>crop thời gian + không gian</td><td><code>s05b_finetune_itw</code></td></tr>
+      <tr><td>12</td><td>Realtime</td><td>Tiền xử lý GPU, pseudo-segment</td><td>cosine 0.9998; 2.9 ms/frame</td><td><code>preprocess_gpu, realtime</code></td></tr>
+    </tbody>
+  </table>
+  <figure><img src="{{FIG_VIDEO}}" alt="Kiểm toán kỹ thuật video"><figcaption><b>Hình 3.</b> Trái: độ lệch thời gian ở cuối video với cách lấy mẫu cũ; video 23.98 fps lệch tuyến tính 6.6% thời lượng. Giữa: % diện tích giữ lại sau center-crop. Phải: 88.6% segment ItW ngắn hơn ngữ cảnh 4.4 s của classifier.</figcaption></figure>
+  <h3>Lỗi 1: lấy mẫu theo bước nguyên</h3>
+  <p>Code cũ lấy 1 frame mỗi round(fps / 7.5) frame. Với 23.98 fps, bước là 3, tức thực tế 8.0 fps, trong khi feature thứ i vẫn được gán mốc i × 2/15 s. 85 video lệch quá 0.5 s; 104 segment (61 ở test) trượt quá nửa thời lượng. Bản sửa <code>timefix</code> chọn frame gốc gần nhất với mốc j / 7.5 s. Metadata OF-Syn ghi khoảng 49% video sinh ở 24/25 fps, nên feature train có thể lệch tương tự; chưa kiểm chứng được vì video đã bị xoá.</p>
+  <h3>Lỗi 2: center-crop</h3>
+  <figure style="display:grid;grid-template-columns:1.25fr 1fr;gap:10pt;align-items:start"><img src="{{FIG_FRAME}}" alt="Khung hình OF-ItW có người đã ngã ở giữa và người đứng ở mép trái"><figcaption style="margin:0"><b>Hình 4.</b> OF-ItW, giây 4.05 của clip ở trang bìa (nhãn: fallen). Resize cạnh ngắn về 224 rồi cắt giữa chỉ giữ dải từ 22% tới 78% chiều ngang; người đứng ở mép trái bị loại. TTA không gian chạy thêm crop trái (0–56%) và phải (44–100%), rồi lấy trung bình xác suất. Với video dọc, crop chạy theo chiều dọc.</figcaption></figure>
+  <h3>Đánh giá ngẫu nhiên</h3>
+  <p>Code gốc chọn vị trí 18 feature trong segment theo u ~ U(0,1) mỗi lần đánh giá. <code>tcfall/segments.py</code> tái tạo đúng logic đó nhưng cố định u (0.5, hoặc K vị trí cho TTA thời gian). 10 lần rút cho Fallen-F1 23.5–26.0, trung bình 24.7.</p>
+  <table>
+    <thead><tr><th>Biến thể tiền xử lý (baseline St+Sy, ItW test)</th><th class="n">Fallen-F1</th><th class="n">Fall-F1</th><th class="n">Fall∪Fallen</th></tr></thead>
+    <tbody>
+      <tr><td>Legacy, crop ngẫu nhiên (10 lần rút)</td><td class="n">24.7 ± 0.8</td><td class="n">44.4 ± 0.5</td><td class="n">55.1 ± 0.4</td></tr>
+      <tr><td>Legacy, crop giữa tất định</td><td class="n">26.3</td><td class="n">44.7</td><td class="n">55.9</td></tr>
+      <tr><td>Timefix, crop giữa</td><td class="n">26.9</td><td class="n">44.8</td><td class="n">56.0</td></tr>
+      <tr><td>Timefix + TTA không gian 3 crop</td><td class="n">24.8</td><td class="n">44.5</td><td class="n">54.5</td></tr>
+    </tbody>
+  </table>
+  <p>Với baseline St+Sy, các sửa đổi này nằm trong mức nhiễu. Với classifier đã fine-tune, TTA không gian tăng Fallen-F1 streaming +1.9 (CI 95% [+0.6, +3.4]).</p>
+  <div class="callout"><b class="t">Tiền xử lý GPU cho realtime</b>Resize, crop và chuẩn hoá trên GPU, so với processor CPU trên 20 video test (1.831 frame): sai khác pixel trung bình 0.0043 (đơn vị chuẩn hoá), cosine feature 0.9998, dự đoán baseline trùng 98.7%, thời gian 2.9 ms so với 7.2 ms mỗi frame.</div>
+</section>
+
+<section class="chap">
+  <h2><span class="num">06</span>Phương pháp</h2>
+  <p class="lead">Năm cách cải thiện, chia hai nhóm: hậu xử lý theo thời gian trên xác suất của baseline, và thích nghi chính classifier. Mọi conditioner đều nhân quả để chạy được realtime.</p>
+  <table>
+    <thead><tr><th>Phương pháp</th><th>Cần huấn luyện</th><th>Dùng nhãn ItW-train</th><th>Tham số chọn trên val</th></tr></thead>
+    <tbody>
+      <tr><td>Rule-conditioning (bài báo, Eq. 1–2)</td><td>Không</td><td>Không</td><td>τ, W, chu kỳ hop</td></tr>
+      <tr><td>HMM lọc tiến</td><td>Không (đếm chuyển tiếp nhãn train)</td><td>Không</td><td>self-loop, độ mạnh, hop</td></tr>
+      <tr><td>Hiệu chỉnh label shift (EM / prior ItW)</td><td>Không</td><td>Prior ItW: có</td><td>α</td></tr>
+      <tr><td>Hybrid (residual attention + KL-anchor)</td><td>Có</td><td>Tuỳ chọn</td><td>λ_KL</td></tr>
+      <tr class="hl"><td>Fine-tune classifier</td><td>Có</td><td>Có</td><td>lr, λ_L2-SP</td></tr>
+    </tbody>
+  </table>
+  <p><b>Rule-conditioning.</b> Sau một dự đoán transient c, xác suất được trộn với one-hot của trạng thái tĩnh tương ứng theo trọng số w(Δt) = 2^(−Δt/τ) với 0 &lt; Δt ≤ W. Không boost segment đang được đoán là transient và không boost tại Δt = 0. Bản vector hoá trong <code>tcfall/conditioners.py</code> cho kết quả trùng với <code>src/conditioning.py</code> (chênh lệch tối đa 1.4 × 10⁻⁷ trên 2.804 segment).</p>
+  <p><b>HMM lọc tiến.</b> α_t ∝ (Aᵀα_{t−1}) · (p_t / π)^s, với A ước lượng từ nhãn train Staged + Syn. Có hai cách ước lượng. Cách theo segment khai thác ranh giới nhãn, nên chỉ dùng được cho đánh giá theo segment. Cách lấy mẫu nhãn mỗi hop giây có self-loop thực tế và dùng cho streaming.</p>
+  <p><b>Hybrid.</b> Một lớp attention nhân quả (128 chiều, 4 head, cửa sổ 15 s) cộng FFN. Mô-đun học phần dư cộng lên log-xác suất sau rule, với loss CE có trọng số lớp cộng λ·KL về phân phối rule. Bài báo mô tả là "two-layer" với đầu vào là feature; code thực tế là 1 lớp và đầu vào là log-xác suất 10 chiều.</p>
+  <p><b>Fine-tune ItW.</b> Khởi tạo từ checkpoint St+Sy, huấn luyện trên 809 segment của 165 video ItW-train, label smoothing 0.1. Tăng cường ở mức feature gồm vị trí ngẫu nhiên trong segment và crop không gian ngẫu nhiên. L2-SP được thêm vào lưới để chống quên, vì không còn feature nguồn để trộn. Lưới lr × λ_L2-SP chọn lr = 5 × 10⁻⁴, λ = 0, 30 epoch; điểm val bão hoà từ 2 × 10⁻⁴. Thiết lập này tương ứng cấu hình St+Sy+ItW của OmniFall và được báo cáo tách riêng.</p>
+
+  <h2 style="margin-top:18pt"><span class="num">07</span>Giao thức đánh giá</h2>
+  <p class="lead">Báo cáo dùng hai thước đo và coi <b>streaming là thước đo chính</b>, vì đánh giá theo segment cho conditioner biết trước ranh giới nơi nhãn đổi.</p>
+  <table>
+    <thead><tr><th></th><th>Theo segment (OmniFall)</th><th>Streaming (như camera)</th></tr></thead>
+    <tbody>
+      <tr><td>Đơn vị dự đoán</td><td>1 segment từ nhãn (2.804 ở test)</td><td>1 bước mỗi 0.133 s (~31.000 bước, 1.17 giờ)</td></tr>
+      <tr><td>Ngữ cảnh classifier</td><td>18 feature quanh giữa segment, nhìn cả tương lai</td><td>18 feature quá khứ, kết thúc tại t</td></tr>
+      <tr><td>Chuỗi cho conditioner</td><td>Các segment theo nhãn</td><td>Pseudo-segment: trung bình xác suất mỗi 0.5 hoặc 1 s</td></tr>
+      <tr><td>Nhãn so sánh</td><td>Nhãn của segment</td><td>Nhãn tại t − lag (0 / 1.1 / 2.2 s)</td></tr>
+      <tr><td>Triển khai được</td><td>Không</td><td>Có, giống hệt ứng dụng</td></tr>
+    </tbody>
+  </table>
+  <p><b>Rò rỉ oracle.</b> Tinh chỉnh HMM theo segment trên val chọn self-loop = 0, tức bắt buộc đổi lớp ở mỗi segment. Cấu hình đó đạt Fallen-F1 51.3 trên test, cao hơn Hybrid v8 (32.8) 18 điểm. Nó chỉ đúng vì 92.3% cặp segment liền kề khác nhãn, một thông tin camera không có.</p>
+  <p><b>Bù trễ 2.2 s.</b> Ngữ cảnh nhân quả dài 4.4 s, nên tâm thông tin classifier thấy nằm khoảng 2.2 s trước t. Ở lag 0, Fall-F1 của mọi mô hình chỉ 7–16; ở lag 2.2 s, số liệu streaming trở về ngang mức theo segment.</p>
+  <p><b>Báo động.</b> Một đợt fallen (310 đợt ở test) được tính là phát hiện nếu có báo động trong [đầu đợt, cuối đợt + 5 s]. Báo động giả là báo động nằm ngoài mọi đợt (nới 1 s trước, 5 s sau). Báo động bật khi fallen liên tục ≥ alarm_on và tắt sau 3 s không còn fallen.</p>
+  <p><b>Chọn tham số.</b> Điểm trên ItW-val (81 video) = (Fallen-F1 + Fall∪Fallen-F1) / 2. Val nhỏ (46 segment fallen) nên việc chọn có nhiễu. Như code gốc, checkpoint baseline cũng chọn trên OOPS-val.</p>
+</section>
+
+<section class="chap">
+  <h2><span class="num">08</span>Kết quả theo segment</h2>
+  <p class="lead">Theo segment, fine-tune là cải thiện lớn nhất có thể triển khai: Fall∪Fallen 66.0 ± 0.4 so với 55.1 ± 0.4. Các conditioner trên baseline St+Sy tăng Fallen-F1 4–8 điểm nhưng gần như không đổi Fall∪Fallen.</p>
+  <table>
+    <thead><tr><th>Phương pháp (ItW test, 2.804 segment)</th><th class="n">Fallen-F1</th><th class="n">Fall-F1</th><th class="n">Fall∪Fallen</th><th class="n">Bal. Acc</th></tr></thead>
+    <tbody>
+      <tr><td>Baseline St+Sy, đánh giá ngẫu nhiên (10 lần rút)</td><td class="n">24.7 ± 0.8</td><td class="n">44.4 ± 0.5</td><td class="n">55.1 ± 0.4</td><td class="n">22.7 ± 0.7</td></tr>
+      <tr><td>Baseline, crop giữa tất định</td><td class="n">26.3</td><td class="n">44.7</td><td class="n">55.9</td><td class="n">23.9</td></tr>
+      <tr><td>Rule τ=4, W=10 (bài báo) *</td><td class="n">28.9</td><td class="n">44.5</td><td class="n">54.0</td><td class="n">23.6</td></tr>
+      <tr><td>Rule τ=2, W=3 (chọn trên val) *</td><td class="n">32.0</td><td class="n">44.5</td><td class="n">55.4</td><td class="n">24.5</td></tr>
+      <tr><td>Hybrid v8, checkpoint bài báo *</td><td class="n">32.8 ± 1.0</td><td class="n">44.3 ± 1.2</td><td class="n">56.7 ± 0.8</td><td class="n">23.2 ± 0.8</td></tr>
+      <tr><td>Hybrid huấn luyện lại, λ_KL = 0 *</td><td class="n">30.6 ± 2.5</td><td class="n">45.6 ± 1.6</td><td class="n">57.9 ± 0.5</td><td class="n">22.5 ± 0.2</td></tr>
+      <tr><td>Hybrid huấn luyện lại, λ_KL = 0.3 *</td><td class="n">31.5 ± 0.7</td><td class="n">45.7 ± 0.6</td><td class="n">57.3 ± 0.8</td><td class="n">23.6 ± 0.9</td></tr>
+      <tr><td>Hybrid huấn luyện lại, λ_KL = 1.0 *</td><td class="n">30.7 ± 0.5</td><td class="n">44.3 ± 0.3</td><td class="n">56.7 ± 0.4</td><td class="n">23.8 ± 0.4</td></tr>
+      <tr class="warn"><td>HMM, self-loop = 0 * †</td><td class="n">51.3</td><td class="n">52.8</td><td class="n">60.8</td><td class="n">27.2</td></tr>
+      <tr class="hl"><td>Fine-tune ItW-train, crop giữa ‡</td><td class="n">44.1 ± 2.6</td><td class="n">58.7 ± 0.8</td><td class="n">66.0 ± 0.4</td><td class="n">25.1 ± 1.4</td></tr>
+      <tr class="hl"><td>Fine-tune + TTA không gian & thời gian ‡</td><td class="n">46.1 ± 3.4</td><td class="n">59.4 ± 0.6</td><td class="n">66.2 ± 0.5</td><td class="n">25.1 ± 1.4</td></tr>
+    </tbody>
+  </table>
+  <p class="note">* dùng ranh giới segment từ nhãn · † khai thác "nhãn đổi ở mỗi ranh giới", không triển khai được · ‡ dùng nhãn ItW-train. ± = độ lệch chuẩn mẫu qua 3 seed (hoặc 10 lần rút).</p>
+  <p><b>Ablation KL-anchor.</b> Đúng thiết lập bài báo (legacy, τ = 4, W = 10), KL-anchor giảm độ lệch chuẩn Fallen-F1 giữa các seed (2.5 → 0.7) nhưng không tăng trung bình; Fall∪Fallen của λ = 0 còn nhỉnh hơn. <b>Label shift</b> theo prior ItW-train không cải thiện val; EM không nhãn làm sập lớp fallen.</p>
+  <figure><img src="{{FIG_CONF}}" alt="Confusion matrix chuẩn hoá toàn hàng"><figcaption><b>Hình 5.</b> Recall theo hàng (%), mẫu số là toàn bộ segment của lớp. Recall fallen của baseline là 20.4%, không phải 35.3% như Fig. 2 của bài báo (hình đó chia cho tổng 4 cột). Lỗi lớn nhất của fallen là bị đoán thành 6 lớp còn lại (39%) và fall (36.8%), rất ít thành lying (3.5%).</figcaption></figure>
+</section>
+
+<section class="chap">
+  <h2><span class="num">09</span>Kết quả streaming và báo động</h2>
+  <p class="lead">Khi chạy như camera, hệ thống tốt nhất (fine-tune + TTA không gian + rule τ = 1 s, W = 5 s, hop 0.5 s) đạt <b>44.3 / 62.0 / 69.3</b>. Trên baseline St+Sy, không conditioner nào tăng được Fall∪Fallen.</p>
+  <table>
+    <thead><tr><th>Classifier</th><th>Hậu xử lý (chọn trên val)</th><th class="n">Fallen-F1</th><th class="n">Fall-F1</th><th class="n">Fall∪Fallen</th><th class="n">Fall∪Fallen, lag 0</th></tr></thead>
+    <tbody>
+      <tr><td>St+Sy</td><td>Không</td><td class="n">31.9</td><td class="n">45.5</td><td class="n">56.8</td><td class="n">38.4</td></tr>
+      <tr><td>St+Sy</td><td>Rule τ=4, W=3, hop 1 s + TTA</td><td class="n">33.6</td><td class="n">43.2</td><td class="n">56.7</td><td class="n">36.6</td></tr>
+      <tr><td>St+Sy</td><td>HMM hop 0.5 s</td><td class="n">38.3</td><td class="n">33.0</td><td class="n">49.9</td><td class="n">32.0</td></tr>
+      <tr><td>St+Sy</td><td>Hybrid v8 (3 seed)</td><td class="n">37.0 ± 0.7</td><td class="n">37.2 ± 3.0</td><td class="n">53.1 ± 1.6</td><td class="n">34.3 ± 1.3</td></tr>
+      <tr><td>Fine-tune ‡</td><td>Không</td><td class="n">40.8</td><td class="n">60.4</td><td class="n">67.7</td><td class="n">44.6</td></tr>
+      <tr><td>Fine-tune ‡</td><td>TTA không gian</td><td class="n">42.7</td><td class="n">60.9</td><td class="n">68.4</td><td class="n">44.4</td></tr>
+      <tr class="hl"><td>Fine-tune ‡</td><td>Rule τ=1, W=5, hop 0.5 s + TTA</td><td class="n">44.3</td><td class="n">62.0</td><td class="n">69.3</td><td class="n">43.8</td></tr>
+      <tr><td>Fine-tune ‡</td><td>HMM hop 0.5 s</td><td class="n">44.2</td><td class="n">53.4</td><td class="n">62.3</td><td class="n">37.6</td></tr>
+      <tr><td>Fine-tune ‡</td><td>Hybrid v8 (3 seed)</td><td class="n">45.7 ± 1.3</td><td class="n">56.1 ± 3.4</td><td class="n">66.2 ± 1.9</td><td class="n">39.7 ± 1.6</td></tr>
+    </tbody>
+  </table>
+  <p>HMM và Hybrid luôn tăng Fallen-F1 bằng cách đoán fallen nhiều hơn, làm Fall-F1 giảm 4–13 điểm. Rule chọn trên val là lựa chọn duy nhất cải thiện đồng thời cả ba chỉ số, và chỉ khi nền là classifier đã fine-tune.</p>
+  <figure><img src="{{FIG_TRADE}}" alt="Đánh đổi recall và báo động giả"><figcaption><b>Hình 6.</b> % đợt fallen được báo động theo số báo động giả mỗi giờ; số trên điểm là giây fallen liên tục cần để báo. Fine-tune (nét liền) nằm trên St+Sy (nét đứt); thêm rule không đẩy đường cong lên.</figcaption></figure>
+  <table>
+    <thead><tr><th>Hệ thống (310 đợt fallen)</th><th class="n">Ngưỡng</th><th class="n">% đợt được báo</th><th class="n">Độ trễ trung vị</th><th class="n">Báo giả / giờ</th></tr></thead>
+    <tbody>
+      <tr><td>St+Sy, không hậu xử lý</td><td class="n">0.5 s</td><td class="n">20.6%</td><td class="n">3.06 s</td><td class="n">36.6</td></tr>
+      <tr><td>St+Sy, không hậu xử lý</td><td class="n">1.0 s</td><td class="n">9.0%</td><td class="n">3.60 s</td><td class="n">13.6</td></tr>
+      <tr><td>Fine-tune + TTA</td><td class="n">0.5 s</td><td class="n">41.6%</td><td class="n">2.59 s</td><td class="n">69.0</td></tr>
+      <tr><td>Fine-tune + TTA</td><td class="n">1.5 s</td><td class="n">16.8%</td><td class="n">3.52 s</td><td class="n">20.4</td></tr>
+      <tr><td>Fine-tune + TTA + rule (mặc định của app)</td><td class="n">1.0 s</td><td class="n">34.5%</td><td class="n">3.12 s</td><td class="n">69.0</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Báo động giả đo trên clip OOPS: video "fail" ngắn (trung vị 9.4 s), nhiều chuyển động mạnh và cú ngã không dẫn tới fallen. Con số này không đại diện cho môi trường chăm sóc người già.</p>
+</section>
+
+<section class="chap">
+  <h2><span class="num">10</span>Kiểm định thống kê</h2>
+  <p class="lead">Fine-tune cải thiện có ý nghĩa cả ba chỉ số ở cả 3 seed. Trên nền fine-tune, rule thêm +1.6 đến +3.5 điểm có ý nghĩa khi streaming.</p>
+  <p>CI 95% từ bootstrap 10.000 lần, resample theo <b>video</b> (572 video) để tôn trọng tương quan giữa các segment trong cùng video. Δ = B − đối chứng, đơn vị điểm F1.</p>
+  <table>
+    <thead><tr><th>So sánh (B so với đối chứng)</th><th>Thước đo</th><th class="n">Δ Fallen [CI]</th><th class="n">Δ Fall [CI]</th><th class="n">Δ Fall∪Fallen [CI]</th></tr></thead>
+    <tbody>
+      <tr><td>Rule τ=4, W=10 vs baseline crop giữa</td><td>Segment</td><td class="n">+2.5 [−1.0, +6.2]</td><td class="n">0.0 [0.0, 0.0]</td><td class="n">−0.2 [−1.6, +1.2]</td></tr>
+      <tr><td>Hybrid v8 seed 42</td><td>Segment</td><td class="n">+6.7 [+2.6, +10.8]</td><td class="n">−0.6 [−2.1, +0.9]</td><td class="n">+1.6 [−0.0, +3.1]</td></tr>
+      <tr><td>Hybrid v8 seed 43</td><td>Segment</td><td class="n">+5.5 [+1.8, +9.4]</td><td class="n">+0.9 [−0.7, +2.5]</td><td class="n">+0.9 [−0.6, +2.5]</td></tr>
+      <tr><td>Hybrid v8 seed 44</td><td>Segment</td><td class="n">+7.5 [+3.4, +11.6]</td><td class="n">−1.5 [−3.4, +0.4]</td><td class="n">0.0 [−1.8, +1.7]</td></tr>
+      <tr class="hl"><td>Fine-tune ItW seed 42 ‡</td><td>Segment</td><td class="n">+14.8 [+8.9, +20.8]</td><td class="n">+14.9 [+11.8, +17.9]</td><td class="n">+10.1 [+7.5, +12.7]</td></tr>
+      <tr class="hl"><td>Fine-tune ItW seed 43 ‡</td><td>Segment</td><td class="n">+19.7 [+13.8, +25.4]</td><td class="n">+13.6 [+10.5, +16.7]</td><td class="n">+10.6 [+7.9, +13.2]</td></tr>
+      <tr class="hl"><td>Fine-tune ItW seed 44 ‡</td><td>Segment</td><td class="n">+19.0 [+13.5, +24.3]</td><td class="n">+13.4 [+10.4, +16.3]</td><td class="n">+9.8 [+7.0, +12.4]</td></tr>
+      <tr class="warn"><td>St+Sy: HMM vs không hậu xử lý</td><td>Streaming</td><td class="n">+6.4 [+2.7, +10.1]</td><td class="n">−12.5 [−14.8, −10.4]</td><td class="n">−6.9 [−9.2, −4.7]</td></tr>
+      <tr class="warn"><td>St+Sy: Hybrid v8 seed 42 vs không</td><td>Streaming</td><td class="n">+5.5 [+1.8, +9.4]</td><td class="n">−6.6 [−8.3, −4.9]</td><td class="n">−2.7 [−4.6, −0.7]</td></tr>
+      <tr><td>Fine-tune: TTA không gian vs không ‡</td><td>Streaming</td><td class="n">+1.9 [+0.6, +3.4]</td><td class="n">+0.4 [−0.5, +1.3]</td><td class="n">+0.7 [−0.0, +1.5]</td></tr>
+      <tr class="hl"><td>Fine-tune: TTA + rule vs không ‡</td><td>Streaming</td><td class="n">+3.5 [+1.2, +5.9]</td><td class="n">+1.6 [+0.5, +2.6]</td><td class="n">+1.7 [+0.6, +2.7]</td></tr>
+    </tbody>
+  </table>
+  <p>McNemar trên đúng/sai thuộc {fall, fallen} cho fine-tune cùng chiều: số segment chỉ fine-tune đoán đúng vượt số segment chỉ baseline đoán đúng (356/288, 372/264, 351/238; p ≤ 0.008). Với rule của bài báo, McNemar nghiêng về baseline (158/65, p = 7 × 10⁻¹⁰): rule đổi nhiều segment không phải ngã thành fallen, trong khi F1 hợp không đổi. Các kiểm định chưa hiệu chỉnh đa so sánh; fine-tune có CI cách xa 0, còn rule trên fine-tune có cận dưới +0.5 đến +1.2.</p>
+
+</section>
+
+<section class="chap">
+  <h2><span class="num">11</span>Ứng dụng realtime</h2>
+  <p class="lead"><code>app/realtime_app.py</code> chạy thời gian thực trên RTX 3070 với cấu hình tốt nhất, kể cả TTA 3 crop: 40–47 ms suy luận mỗi cửa sổ, trễ hiển thị 0.03–0.10 s.</p>
+  <figure><img src="{{FIG_APP}}" alt="Ảnh chụp ứng dụng realtime"><figcaption><b>Hình 7.</b> Ứng dụng trên clip OF-ItW: khung video có viền theo trạng thái; bảng bên phải gồm trạng thái (FALLEN), xác suất 10 lớp (thanh màu sau hậu xử lý, vạch xám là baseline), dòng thời gian 30 s, fps camera, độ trễ và thời gian suy luận.</figcaption></figure>
+  <table>
+    <thead><tr><th>Luồng</th><th>Việc</th><th>Chi tiết</th></tr></thead>
+    <tbody>
+      <tr><td>Camera</td><td>Đọc frame, gắn mốc thời gian</td><td>Hàng đợi tối đa 64 frame; đầy thì bỏ frame, không chặn camera</td></tr>
+      <tr><td>Suy luận (GPU)</td><td>Lấy mẫu 7.5 fps theo đồng hồ → tiền xử lý GPU 3 crop → VideoMAE fp16 (gộp batch khi trễ) → classifier 18 feature → pseudo-segment 0.5 s → rule τ = 1 s, W = 5 s → báo động</td><td>Báo động bật khi fallen liên tục ≥ 1 s, tắt sau 3 s</td></tr>
+      <tr><td>Giao diện</td><td>Hiển thị, ghi log, ghi video</td><td>Phím 1–4 đổi chế độ; r reset; s chụp; ghi <code>outputs_v2/app_logs/alarm_events.csv</code></td></tr>
+    </tbody>
+  </table>
+<pre>python app/realtime_app.py                       # webcam 0, cấu hình tốt nhất
+python app/realtime_app.py --video &lt;clip&gt;.mp4 --record out.mp4
+python app/realtime_app.py --model base          # checkpoint St+Sy gốc
+python app/realtime_app.py --alarm_on 1.5 --beep</pre>
+  <p class="note">Đã kiểm thử trên video OOPS gốc, kể cả phát cảnh báo và ghi CSV. Chưa thử webcam vì máy không có camera; đường webcam chỉ khác nguồn frame và mốc thời gian theo đồng hồ.</p>
+</section>
+
+<section class="chap">
+  <h2><span class="num">12</span>Hệ quả đối với bài báo</h2>
+  <p class="lead">Các con số chính của bài báo tái lập đúng từ cache và checkpoint (26.6 / 30.0 / 34.3 ± 0.6), nhưng có 11 chỗ mô tả sai và kết luận về Hybrid không đứng vững khi đánh giá streaming.</p>
+  <table>
+    <thead><tr><th>#</th><th>Vị trí</th><th>Hiện ghi</th><th>Thực tế / cần sửa</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>IV-A, Discussion</td><td>Phân loại "fixed-length 2-second window"</td><td>Segment lấy từ nhãn, dài 0.015–44.7 s; cần thêm đánh giá streaming</td></tr>
+      <tr><td>2</td><td>Table I, IV-B</td><td>Hybrid v8 vượt rule, tăng Fall∪Fallen</td><td>Streaming: Hybrid làm Fall∪Fallen giảm 2.7 [−4.6, −0.7]</td></tr>
+      <tr><td>3</td><td>IV-A, Table II</td><td>OF-ItW test "26 videos"</td><td>572 video; bootstrap trong code đã dùng 572</td></tr>
+      <tr><td>4</td><td>IV-D, Fig. 2</td><td>fallen→fall 58.4%, recall 35.3%→55.4%</td><td>Toàn hàng: fallen→fall 34.9%, recall 21.1%→36.0%, fall 45.8%→43.0%</td></tr>
+      <tr><td>5</td><td>Table I</td><td>Baseline 26.6</td><td>Một lần rút; 10 lần rút cho 24.7 ± 0.8</td></tr>
+      <tr><td>6</td><td>III-B, III-C</td><td>τ, W, λ chọn bằng grid search; ablation KL</td><td>Không có bằng chứng trong repo cũ; v2: τ = 2, W = 3; KL giảm sd 2.5 → 0.7, không tăng trung bình</td></tr>
+      <tr><td>7</td><td>III-A</td><td>Taxonomy 16 lớp</td><td>10 lớp lõi</td></tr>
+      <tr><td>8</td><td>IV-D</td><td>lie_down / lying: 3 và 5 segment</td><td>11 và 17 segment</td></tr>
+      <tr><td>9</td><td>III-C</td><td>Hybrid "two-layer", đầu vào feature</td><td>1 lớp attention + FFN, đầu vào log-xác suất 10 chiều</td></tr>
+      <tr><td>10</td><td>IV-A</td><td>ItW "never seen during training"</td><td>Checkpoint chọn trên OOPS-val</td></tr>
+      <tr><td>11</td><td>Table I</td><td>± trộn ddof 0 và 1</td><td>Thống nhất, ví dụ ddof = 1: 34.3 ± 0.7, 44.6 ± 1.1, 57.1 ± 0.7</td></tr>
+      <tr><td>12</td><td>Fig. 1, 2</td><td>Tiêu đề hình tiếng Việt</td><td>Vẽ lại bằng tiếng Anh</td></tr>
+    </tbody>
+  </table>
+  <h3>Hướng viết lại đề xuất</h3>
+  <ul>
+    <li>Đổi đóng góp chính thành phân tích: giao thức theo segment rò rỉ ranh giới nhãn, có bằng chứng HMM self-loop = 0 đạt 51.3.</li>
+    <li>Thêm bảng streaming và bảng báo động làm kết quả chính.</li>
+    <li>Giữ rule-conditioning như cải thiện nhỏ, nhất quán khi đặt trên classifier đã thích nghi miền.</li>
+    <li>Đưa Hybrid về phần thảo luận: nó đổi Fall lấy Fallen, không tăng Fall∪Fallen khi streaming.</li>
+  </ul>
+
+  <h2 style="margin-top:18pt"><span class="num">13</span>Hạn chế và hướng tiếp theo</h2>
+  <ul>
+    <li>Backbone chưa được huấn luyện lại vì feature OF-Syn và staged đã bị xoá; đây là nơi có nhiều dư địa nhất.</li>
+    <li>Chỉ 3/8 bộ staged (450 video); CMDFall, UP-Fall, EDF, OCCU chưa có.</li>
+    <li>Val ItW nhỏ (81 video, 46 segment fallen); một số tham số chọn ở mép lưới.</li>
+    <li>Báo động giả đo trên clip "fail" ngắn, không phải camera giám sát liên tục; webcam chưa thử trên thiết bị thật.</li>
+  </ul>
+  <ol>
+    <li>Tải lại OF-Syn (~5 giờ) và 3 bộ staged, trích feature với <code>timefix</code>, huấn luyện lại baseline; thêm ItW-train vào cùng lúc.</li>
+    <li>Huấn luyện classifier trên cửa sổ nhân quả với nhãn tại t − 2.2 s, khớp cách ứng dụng dự đoán.</li>
+    <li>Chọn ngưỡng báo động trên video giám sát thật theo mục tiêu số báo động giả mỗi ngày.</li>
+    <li>Thử crop theo người (person detector) thay cho TTA không gian cố định.</li>
+  </ol>
+</section>
+
+<section class="chap">
+  <h2><span class="num">14</span>Tái lập kết quả</h2>
+  <p class="lead">Toàn bộ kết quả tái tạo được theo 11 bước, chạy từ thư mục <code>omnifall-conditioning/</code>, khoảng 3–3.5 giờ trên RTX 3070. Trên Windows đặt <code>PYTHONUTF8=1</code>.</p>
+  <table>
+    <thead><tr><th>Bước</th><th>Lệnh</th><th class="n">Thời gian</th><th>Đầu ra</th></tr></thead>
+    <tbody>
+      <tr><td>1 · Kiểm toán nhãn</td><td><code>python pipeline/s01_audit_data.py</code></td><td class="n">&lt; 1 phút</td><td><code>data_audit/</code></td></tr>
+      <tr><td>1b · Kiểm toán video</td><td><code>python pipeline/s01b_video_audit.py</code></td><td class="n">1 phút</td><td><code>video_audit.csv</code></td></tr>
+      <tr><td>2 · Feature OOPS</td><td><code>python pipeline/s02_extract_oops_features.py</code></td><td class="n">35–55 phút</td><td><code>features_v2/legacy, timefix</code></td></tr>
+      <tr><td>2b · Crop không gian</td><td><code>python pipeline/s02b_extract_spatial_crops.py</code></td><td class="n">~60 phút</td><td><code>features_v2/timefix_start, _end</code></td></tr>
+      <tr><td>3 · Logits baseline</td><td><code>python pipeline/s03_cache_logits.py</code> (+ <code>--variants timefix_start,timefix_end</code>)</td><td class="n">5 phút</td><td><code>logits/</code></td></tr>
+      <tr><td>4 · Hậu xử lý theo segment</td><td><code>python pipeline/s04_posthoc_study.py</code></td><td class="n">10 phút</td><td><code>study/</code>, <code>best_config.json</code></td></tr>
+      <tr><td>5 · Ablation Hybrid</td><td><code>python pipeline/s05_train_hybrid.py --paper_setup --tag paper --data_modes stsyn --lambdas 0,0.3,1.0</code></td><td class="n">~15 phút</td><td><code>hybrid/</code></td></tr>
+      <tr><td>5b · Fine-tune ItW</td><td><code>python pipeline/s05b_finetune_itw.py</code></td><td class="n">~20 phút</td><td><code>finetune/</code></td></tr>
+      <tr><td>6 · Kiểm tra GPU</td><td><code>python pipeline/s06_check_gpu_preprocess.py</code></td><td class="n">2 phút</td><td><code>gpu_preprocess_check.json</code></td></tr>
+      <tr><td>7 · Streaming</td><td><code>python pipeline/s07_stream_eval.py</code>; với fine-tune đặt <code>TCFALL_STREAM_TAG=ft</code>, <code>TCFALL_BASELINE_CKPT=…/baseline_ft_itw_seed42.pt</code></td><td class="n">~15 phút / lần</td><td><code>stream/</code>, <code>stream_ft/</code></td></tr>
+      <tr><td>8 · Bảng, hình cuối</td><td><code>python pipeline/s08_final_report.py</code></td><td class="n">3 phút</td><td><code>final/</code></td></tr>
+    </tbody>
+  </table>
+  <h3>Cấu trúc mã nguồn</h3>
+<pre>tcfall/        config · data · video · features · preprocess_gpu · segments
+               baseline · conditioners · realtime · metrics · study
+pipeline/      s01 → s08 (kiểm toán, trích feature, thí nghiệm, đánh giá, tổng hợp)
+app/           realtime_app.py (3 luồng, giao diện OpenCV)
+deliverables/  báo cáo này, slide thuyết trình, build.py
+outputs_v2/    mọi kết quả mới; src/ và scripts/ cũ giữ nguyên để đối chiếu</pre>
+
+  <h2 style="margin-top:18pt"><span class="num">A</span>Phụ lục: cấu hình đã chọn</h2>
+  <table>
+    <thead><tr><th>Thành phần</th><th>Giá trị</th><th>Chọn trên</th></tr></thead>
+    <tbody>
+      <tr><td>Rule theo segment</td><td>τ = 2 s, W = 3 s</td><td>ItW-val, theo segment</td></tr>
+      <tr><td>Rule streaming, baseline St+Sy</td><td>τ = 4 s, W = 3 s, hop 1 s, TTA không gian</td><td>ItW-val, streaming</td></tr>
+      <tr><td>Rule streaming, fine-tune</td><td>τ = 1 s, W = 5 s, hop 0.5 s, TTA không gian</td><td>ItW-val, streaming</td></tr>
+      <tr><td>Fine-tune</td><td>lr = 5 × 10⁻⁴, λ_L2-SP = 0, 30 epoch, batch 32, label smoothing 0.1</td><td>ItW-val</td></tr>
+      <tr><td>Báo động mặc định của app</td><td>fallen liên tục ≥ 1 s, tắt sau 3 s</td><td>Chọn tay; cần đo lại trên camera thật</td></tr>
+    </tbody>
+  </table>
+  <figure><img src="{{FIG_DUR}}" alt="Độ dài segment theo lớp và miền"><figcaption><b>Hình 8.</b> Độ dài segment theo lớp và miền (cắt ở 20 s). Segment ItW ngắn hơn rõ rệt so với staged và OF-Syn.</figcaption></figure>
+</section>
+</body>
+</html>

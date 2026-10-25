@@ -1,0 +1,6 @@
+dataset,train,val,test,conflict(path in >1 split),labeled_not_in_any_split,split_entries_without_labels,labeled_train,labeled_val,labeled_test,subject_overlap_train_test,subject_overlap_train_val
+of-syn,9600,1200,1200,0,0,0,9600,1200,1200,,
+gmdcsa24,75,48,37,0,0,0,75,48,37,0.0,0.0
+le2i,133,19,38,0,0,0,133,19,38,0.0,0.0
+caucafall,69,9,19,0,3,0,69,9,19,0.0,0.0
+OOPS,165,81,572,0,0,0,165,81,572,,

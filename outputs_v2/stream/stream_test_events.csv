@@ -1,0 +1,31 @@
+name,input,alarm_on_s,val_recall_%,val_fa_per_h,fallen_episodes,episode_recall_%,latency_median_s,false_alarms_per_hour,video_hours
+baseline,timefix,0.0,38.6,93.6,310,44.8,2.32,103.9,1.17
+baseline,timefix,0.5,15.9,31.2,310,20.6,3.06,36.6,1.17
+baseline,timefix,1.0,11.4,12.5,310,9.0,3.6,13.6,1.17
+baseline,timefix,1.5,11.4,6.2,310,4.8,4.7,5.1,1.17
+baseline,timefix,2.0,9.1,0.0,310,3.2,4.49,2.6,1.17
+"rule τ=4,W=3,hop=1.0",spatial,0.0,31.8,93.6,310,39.7,2.65,103.9,1.17
+"rule τ=4,W=3,hop=1.0",spatial,0.5,27.3,62.4,310,31.9,3.31,87.8,1.17
+"rule τ=4,W=3,hop=1.0",spatial,1.0,22.7,49.9,310,24.8,3.76,58.8,1.17
+"rule τ=4,W=3,hop=1.0",spatial,1.5,22.7,43.7,310,16.8,4.05,39.2,1.17
+"rule τ=4,W=3,hop=1.0",spatial,2.0,15.9,37.4,310,10.0,4.48,29.0,1.17
+"hmm hop=0.5,γ=0.5,s=1.0",timefix,0.0,29.5,62.4,310,36.5,2.85,63.0,1.17
+"hmm hop=0.5,γ=0.5,s=1.0",timefix,0.5,25.0,43.7,310,28.4,3.35,40.9,1.17
+"hmm hop=0.5,γ=0.5,s=1.0",timefix,1.0,22.7,31.2,310,17.4,3.9,29.8,1.17
+"hmm hop=0.5,γ=0.5,s=1.0",timefix,1.5,20.5,24.9,310,12.3,4.47,25.6,1.17
+"hmm hop=0.5,γ=0.5,s=1.0",timefix,2.0,15.9,24.9,310,11.0,4.87,24.7,1.17
+hybrid v8 seed42 hop=1.0,spatial,0.0,31.8,81.1,310,42.9,2.41,103.9,1.17
+hybrid v8 seed42 hop=1.0,spatial,0.5,25.0,74.8,310,32.9,2.96,75.8,1.17
+hybrid v8 seed42 hop=1.0,spatial,1.0,18.2,49.9,310,23.5,3.49,41.7,1.17
+hybrid v8 seed42 hop=1.0,spatial,1.5,15.9,31.2,310,17.7,4.03,28.1,1.17
+hybrid v8 seed42 hop=1.0,spatial,2.0,11.4,24.9,310,10.3,4.2,23.0,1.17
+hybrid v8 seed43 hop=1.0,spatial,0.0,31.8,93.6,310,39.0,2.48,106.5,1.17
+hybrid v8 seed43 hop=1.0,spatial,0.5,25.0,68.6,310,31.3,3.19,80.9,1.17
+hybrid v8 seed43 hop=1.0,spatial,1.0,20.5,43.7,310,23.5,3.77,52.0,1.17
+hybrid v8 seed43 hop=1.0,spatial,1.5,13.6,43.7,310,18.1,4.08,40.9,1.17
+hybrid v8 seed43 hop=1.0,spatial,2.0,9.1,37.4,310,13.5,4.45,31.5,1.17
+hybrid v8 seed44 hop=1.0,spatial,0.0,31.8,87.3,310,42.3,2.43,106.5,1.17
+hybrid v8 seed44 hop=1.0,spatial,0.5,27.3,68.6,310,32.3,3.1,80.1,1.17
+hybrid v8 seed44 hop=1.0,spatial,1.0,22.7,49.9,310,25.2,3.65,47.7,1.17
+hybrid v8 seed44 hop=1.0,spatial,1.5,18.2,43.7,310,18.7,4.03,37.5,1.17
+hybrid v8 seed44 hop=1.0,spatial,2.0,11.4,31.2,310,14.5,4.36,31.5,1.17

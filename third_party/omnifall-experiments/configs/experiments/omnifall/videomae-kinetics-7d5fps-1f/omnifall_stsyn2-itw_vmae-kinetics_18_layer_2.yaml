@@ -1,0 +1,20 @@
+# St(GMDCSA24+Le2i+CAUCAFall+MCFD)+Sy -> ItW: bản cuối, 4/8 dataset Staged (902 video thật).
+defaults:
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset: feature-dataset-stsyn2
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_val: feature-dataset-stsyn2-val
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_test: feature-dataset-itwonly
+  - _self_
+
+dataset:
+  num_features: 18
+  split: "cs"
+
+dataset_test:
+  num_features: 18
+
+model:
+  num_layers: 2
+
+wandb:
+  project: "Omnifall Feature Transformer"
+  name: "St(GMDCSA24+Le2i+CAUCAFall+MCFD)+Sy -> ItW | VMAE Kinetics 18 features | 2 Layers"

@@ -1,0 +1,122 @@
+diff --git a/data/dataset_utils.py b/data/dataset_utils.py
+index 5944e20..c47de65 100644
+--- a/data/dataset_utils.py
++++ b/data/dataset_utils.py
+@@ -79,17 +79,18 @@ def _augment_with(dataset, augmentation_str, cfg={}):
+     Apply the specified augmentation to the dataset.
+     """
+ 
+-    match augmentation_str:
+-        case "fourier_phase_only":
+-            return dataset.map(fourier.PhaseOnly(in_arrangement="t c h w", **cfg))
+-        case "tube_masking":
+-            input_size = cfg.get("input_size", (16, 16, 16))  # Patches in (T, H, W)
+-            mask_ratio = cfg.get("mask_ratio", 0.75)  # Ratio of patches to mask
+-            tube_masker = TubeMasker(input_size, mask_ratio)
+-            return dataset.map(tube_masker)
+-        case _:
+-            logging.warning(f"Unknown augmentation: {augmentation_str}, ignoring it.")
+-            return dataset
++    # NOTE: converted from `match/case` (Python 3.10+) to `if/elif` — this environment runs
++    # Python 3.9. Purely syntactic, no behavior change.
++    if augmentation_str == "fourier_phase_only":
++        return dataset.map(fourier.PhaseOnly(in_arrangement="t c h w", **cfg))
++    elif augmentation_str == "tube_masking":
++        input_size = cfg.get("input_size", (16, 16, 16))  # Patches in (T, H, W)
++        mask_ratio = cfg.get("mask_ratio", 0.75)  # Ratio of patches to mask
++        tube_masker = TubeMasker(input_size, mask_ratio)
++        return dataset.map(tube_masker)
++    else:
++        logging.warning(f"Unknown augmentation: {augmentation_str}, ignoring it.")
++        return dataset
+ 
+ 
+ def _recursive_augment(dataset, augmentations):
+diff --git a/data/transforms/fourier.py b/data/transforms/fourier.py
+index 9432367..5f03645 100644
+--- a/data/transforms/fourier.py
++++ b/data/transforms/fourier.py
+@@ -73,26 +73,27 @@ class SpectralTransform(torch.nn.Module):
+         Returns:
+             torch.Tensor: Padded frames.
+         """
+-        match self.padding_mode:
+-            case "reflect":
+-                return torch.cat(
+-                    [
+-                        torch.flip(
+-                            frames.index_select(time_dim, torch.arange(0, self.padding, device=frames.device)),
+-                            dims=[time_dim],
+-                        ),
+-                        frames,
+-                        torch.flip(frames, dims=[time_dim]).index_select(
+-                            time_dim, torch.arange(0, self.padding, device=frames.device)
+-                        ),
+-                    ],
+-                    dim=time_dim,
+-                )
+-            case "constant" | _:
+-                padding_shape = list(frames.shape)
+-                padding_shape[time_dim] = self.padding
+-                zeros = torch.zeros(padding_shape, device=frames.device, dtype=frames.dtype)
+-                return torch.cat([zeros, frames, zeros], dim=time_dim)
++        # NOTE: converted from `match/case` (Python 3.10+) to `if/else` — this environment
++        # runs Python 3.9. Purely syntactic, no behavior change.
++        if self.padding_mode == "reflect":
++            return torch.cat(
++                [
++                    torch.flip(
++                        frames.index_select(time_dim, torch.arange(0, self.padding, device=frames.device)),
++                        dims=[time_dim],
++                    ),
++                    frames,
++                    torch.flip(frames, dims=[time_dim]).index_select(
++                        time_dim, torch.arange(0, self.padding, device=frames.device)
++                    ),
++                ],
++                dim=time_dim,
++            )
++        else:
++            padding_shape = list(frames.shape)
++            padding_shape[time_dim] = self.padding
++            zeros = torch.zeros(padding_shape, device=frames.device, dtype=frames.dtype)
++            return torch.cat([zeros, frames, zeros], dim=time_dim)
+ 
+     def spectral_apply_video(self, frames, fn):
+         """
+diff --git a/scripts/feature_train_eval.py b/scripts/feature_train_eval.py
+index 796757d..84b3a68 100644
+--- a/scripts/feature_train_eval.py
++++ b/scripts/feature_train_eval.py
+@@ -387,7 +387,11 @@ def get_training_args(
+         lr_scheduler_type=cfg.training.scheduler.name,
+         max_grad_norm=cfg.training.optimizer.get("max_grad_norm", 1.0),
+         label_smoothing_factor=0.1,
+-        dataloader_persistent_workers=True,
++        # NOTE: persistent_workers requires num_workers > 0 (torch constraint); tie it to the
++        # configured worker count instead of hardcoding True so `hardware.num_data_workers=0`
++        # (used here to avoid a Windows multiprocessing shared-memory/commit-limit crash under
++        # low disk space) doesn't crash the Trainer.
++        dataloader_persistent_workers=cfg.hardware.get("num_data_workers", 4) > 0,
+         weight_decay=cfg.training.optimizer.get("weight_decay", 0.01),
+     )
+ 
+@@ -925,7 +929,7 @@ def run(cfg: DictConfig) -> Optional[Dict[str, Any]]:
+                 if accelerator.is_main_process and run:
+                     wandb.log(data={"Training completed": True})
+             except Exception as e:
+-                logger.error(f"Error during training: {e}")
++                logger.error(f"Error during training: {e}", exc_info=True)
+                 if not cfg.get("do_test", True):  # Only raise if we're not in test-only mode
+                     raise
+ 
+diff --git a/utils/assertions.py b/utils/assertions.py
+index 0d16c55..7a73e32 100644
+--- a/utils/assertions.py
++++ b/utils/assertions.py
+@@ -1,3 +1,5 @@
++from __future__ import annotations  # NOTE: needed for `X | Y` type hints under Python 3.9
++
+ import logging
+ 
+ from omegaconf import DictConfig

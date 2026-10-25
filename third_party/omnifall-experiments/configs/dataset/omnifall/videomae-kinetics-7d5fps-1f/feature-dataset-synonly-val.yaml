@@ -1,0 +1,33 @@
+# Validation config: of-syn (giống dataset train) + OOPS — repo gốc chỉ "unwrap" đúng dict
+# eval nhiều-dataset khi OOPS có mặt trong val (xem feature_train_eval.py, dòng xử lý
+# `val_dataset["individual"]["OOPS"]`), nên phải thêm OOPS vào đây để tránh KeyError khi
+# Trainer nhận eval_dataset dạng dict lồng nhau. Không dùng OOPS val để chọn checkpoint tốt
+# nhất — chỉ để pipeline không crash; việc chọn checkpoint dựa trên of-syn val (xem "combined").
+name: "feature-dataset-synonly-val"
+feature_datasets:
+  - name: "of-syn"
+    feature_root: "${oc.env:OMNIFALL_ROOT}/of-syn/features/videomae-kinetics-7d5fps-1f"
+    annotations_file: "${oc.env:OMNIFALL_ROOT}/labels/dataset/of-syn.csv"
+    feature_fps: 7.5
+    frames_per_feature: 16
+    feature_stride: 0.133333333
+    feature_centered: false
+    feature_type: "videomae-kinetics-7d5fps-1f"
+    split_root: "${oc.env:OMNIFALL_ROOT}/splits"
+
+  - name: "OOPS"
+    feature_root: "${oc.env:OMNIFALL_ROOT}/OOPS/features/videomae-kinetics-7d5fps-1f"
+    annotations_file: "${oc.env:OMNIFALL_ROOT}/labels/dataset/OOPS.csv"
+    feature_fps: 7.5
+    frames_per_feature: 16
+    feature_stride: 0.133333333
+    feature_centered: false
+    feature_type: "videomae-kinetics-7d5fps-1f"
+    split_root: "${oc.env:OMNIFALL_ROOT}/splits"
+
+num_features: 18
+tokens_per_feature: 1
+feature_dim: 768
+
+feature_ext: ".h5"
+num_classes: 10

@@ -1,0 +1,22 @@
+# St(GMDCSA24+Le2i+CAUCAFall)+Sy -> ItW: gần với protocol thật của paper (St+Sy) hơn bản
+# synonly trước đó (chỉ Sy) — dù 3 dataset staged thu được chỉ là 1 phần nhỏ (450/~14000
+# video staged đầy đủ, thiếu CMDFall/UP-Fall/EDF/OCCU/MCFD do cần permission riêng).
+defaults:
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset: feature-dataset-stsyn
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_val: feature-dataset-stsyn-val
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_test: feature-dataset-itwonly
+  - _self_
+
+dataset:
+  num_features: 18
+  split: "cs"
+
+dataset_test:
+  num_features: 18
+
+model:
+  num_layers: 2
+
+wandb:
+  project: "Omnifall Feature Transformer"
+  name: "St(GMDCSA24+Le2i+CAUCAFall)+Sy -> ItW | VMAE Kinetics 18 features | 2 Layers"

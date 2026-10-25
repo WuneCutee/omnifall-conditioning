@@ -1,0 +1,14 @@
+Phương pháp,Fallen-F1,Fall-F1,Fall∪Fallen F1,Balanced Acc
+Baseline St+Sy — đánh giá ngẫu nhiên như code gốc (10 lần rút),24.7 ± 0.8,44.4 ± 0.5,55.1 ± 0.4,22.7 ± 0.7
+Baseline — crop giữa tất định,26.3,44.7,55.9,23.9
+"Baseline — lấy mẫu timefix, crop giữa",26.9,44.8,56.0,23.9
+Baseline — timefix + TTA không gian (3 crop),24.8,44.5,54.5,24.0
+"Rule-conditioning τ=4,W=10 (bài báo) *",28.9,44.5,54.0,23.6
+"Rule-conditioning τ=2,W=3 (chọn trên val) *",32.0,44.5,55.4,24.5
+"HMM lọc tiến, self-loop≈0 (chọn trên val) * †",51.3,52.8,60.8,27.2
+"Hybrid v8 (bài báo, 3 seed) *",32.8 ± 1.0,44.3 ± 1.2,56.7 ± 0.8,23.2 ± 0.8
+"Hybrid huấn luyện lại, thiết lập bài báo, λ_KL=0 (3 seed) *",30.6 ± 2.5,45.6 ± 1.6,57.9 ± 0.5,22.5 ± 0.2
+"Hybrid huấn luyện lại, thiết lập bài báo, λ_KL=0.3 (3 seed) *",31.5 ± 0.7,45.7 ± 0.6,57.3 ± 0.8,23.6 ± 0.9
+"Hybrid huấn luyện lại, thiết lập bài báo, λ_KL=1 (3 seed) *",30.7 ± 0.5,44.3 ± 0.3,56.7 ± 0.4,23.8 ± 0.4
+"Fine-tune classifier trên ItW-train (crop giữa, 3 seed) ‡",44.1 ± 2.6,58.7 ± 0.8,66.0 ± 0.4,25.1 ± 1.4
+"Fine-tune classifier trên ItW-train (TTA không gian + thời gian, 3 seed) ‡",46.1 ± 3.4,59.4 ± 0.6,66.2 ± 0.5,25.1 ± 1.4

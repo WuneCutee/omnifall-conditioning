@@ -1,0 +1,17 @@
+{
+  "videos":818,
+  "fps_counts":{
+    "29.97":568,
+    "23.98":154,
+    "30.0":96
+  },
+  "portrait_videos(aspect<1)":242,
+  "area_kept_median_%":56.25,
+  "videos_drift_>0.5s":85,
+  "max_drift_s":2.180706144,
+  "segments_shift>50%_of_duration":104,
+  "test_segments_shift>50%":61,
+  "classifier_input_span_s":4.4,
+  "segments_shorter_than_input_span_%":88.6374937842,
+  "segments_shorter_than_1_window_%":62.4564893088
+}

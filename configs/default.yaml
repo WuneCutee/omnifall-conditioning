@@ -1,0 +1,71 @@
+# Cấu hình mặc định — điều chỉnh theo đúng đường dẫn thực tế trên máy bạn
+
+data:
+  root_dir: "./data/omnifall"          # Thư mục gốc sau khi tải dataset về (huggingface-cli download)
+  # Nguồn train/val/eval: list các cặp (hf_config_name, split), load qua
+  # datasets.load_dataset("simplexsigil2/omnifall", hf_config_name) — xem CONFIGS.md.
+  #
+  # LƯU Ý: data/omnifall/ hiện KHÔNG có video thật cho 8 dataset OF-Staged (kể cả những cái
+  # không cần permission riêng như caucafall/le2i/gmdcsa24 — HF repo chỉ phân phối
+  # label/split/parquet cho staged, video phải tự tải từ nguồn gốc từng dataset).
+  # Vì vậy tạm thời train/val CHỈ dùng OF-Syn (video thật có sẵn trong data_files/*.tar) và
+  # eval dùng OF-ItW (video tải qua data/omnifall/prepare_oops_videos.py).
+  # Khi có video Staged thật, thêm ("of-sta-cs", "train") / ("of-sta-cs", "validation") vào
+  # train_sources/val_sources để tái lập đúng cấu hình "St+Sy" của paper (Table 4).
+  train_sources:
+    - ["of-syn", "train"]
+  val_sources:
+    - ["of-syn", "validation"]
+  eval_sources:
+    - ["of-itw", "test"]
+  taxonomy:
+    num_classes: 16
+    fall_class_id: 1
+    fallen_class_id: 2
+    lying_class_id: 6
+    lie_down_class_id: 5
+
+features:
+  backbone: "videomae"                  # "videomae" | "siglip2" | "i3d"
+  videomae:
+    model_name: "MCG-NJU/videomae-base-finetuned-kinetics"
+    fps: 7.5
+    num_frames: 16
+    stride_seconds: 0.1333               # 2/15s, giống Table 12 paper
+  siglip2:
+    model_name: "google/siglip2-base-patch16-224"
+  cache_dir: "./cache/features"
+
+pose:
+  backend: "mediapipe"                   # "mediapipe" | "yolo-pose"
+  yolo_pose_weights: "yolov8n-pose.pt"
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+
+model:
+  baseline:
+    hidden_dim: 768
+    dropout: 0.1
+  conditioning:
+    mode: "learnable"                    # "rule_based" | "learnable"
+    rule_based:
+      boost_window_seconds: 10.0         # Thời gian "nhớ" sau khi phát hiện fall/lie_down
+      decay_type: "exponential"          # "exponential" | "linear"
+      decay_halflife_seconds: 4.0
+    learnable:
+      context_window_seconds: 15.0
+      hidden_dim: 128
+      num_attention_heads: 4
+
+train:
+  batch_size: 16
+  lr: 3.0e-4
+  weight_decay: 0.01
+  epochs: 30
+  early_stopping_patience: 5
+  device: "cuda"                         # đổi thành "cpu" nếu không có GPU (sẽ rất chậm)
+  seed: 42
+
+eval:
+  metrics: ["balanced_accuracy", "macro_f1", "fall_f1", "fallen_f1"]
+  report_confusion_matrix: true

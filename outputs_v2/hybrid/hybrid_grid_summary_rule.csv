@@ -1,0 +1,2 @@
+input,data,lambda,val_score,test_fallen,test_fallen_sd,test_fall,test_fall_sd,test_union,test_union_sd
+rule,stsyn,0.3,46.78,29.53,,44.24,,57.25,

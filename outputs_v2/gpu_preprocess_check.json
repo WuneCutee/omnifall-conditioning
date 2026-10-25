@@ -1,0 +1,9 @@
+{
+  "videos": 20,
+  "frames": 1831,
+  "pixel_mean_abs_diff(normalized units)": 0.004295238282065838,
+  "feature_cosine_mean": 0.999768191576004,
+  "baseline_argmax_agreement_%": 98.65128146974665,
+  "cpu_processor_ms_per_frame": 7.244571217913706,
+  "gpu_ms_per_frame": 2.9480588749317547
+}

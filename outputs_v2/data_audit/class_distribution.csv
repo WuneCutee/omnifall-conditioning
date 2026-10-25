@@ -1,0 +1,6 @@
+group,segments,walk,fall,fallen,sit_down,sitting,lie_down,lying,stand_up,standing,other
+Staged (3 bộ),1683,376,258,248,84,207,15,15,141,106,233
+OF-Syn,19223,1940,2145,1449,1324,2708,1259,2344,1698,2432,1924
+ItW train,809,93,184,100,0,21,3,3,76,67,262
+ItW val,409,50,94,46,6,13,2,0,36,43,119
+ItW test,2804,324,636,318,9,70,11,17,253,264,902

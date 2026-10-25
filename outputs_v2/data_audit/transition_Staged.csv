@@ -1,0 +1,11 @@
+,walk,fall,fallen,sit_down,sitting,lie_down,lying,stand_up,standing,other
+walk,4,129,0,52,0,2,0,0,26,107
+fall,0,0,248,0,0,1,1,4,0,0
+fallen,0,0,0,0,0,1,0,3,0,0
+sit_down,0,1,0,0,68,1,0,0,0,10
+sitting,0,27,0,0,0,5,0,97,1,20
+lie_down,0,0,0,0,0,0,11,0,0,2
+lying,0,1,0,0,0,0,0,2,0,0
+stand_up,77,22,0,0,4,0,0,0,4,17
+standing,38,41,0,2,0,0,0,0,0,12
+other,82,29,0,19,19,1,0,17,25,0

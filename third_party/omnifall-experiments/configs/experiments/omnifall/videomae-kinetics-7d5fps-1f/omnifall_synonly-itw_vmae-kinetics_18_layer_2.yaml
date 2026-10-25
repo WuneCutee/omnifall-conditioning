@@ -1,0 +1,23 @@
+# Custom experiment (not part of the official preset list): train on OF-Synthetic only,
+# validate on its own held-out split, test on OF-ItW (OOPS) — approximates the paper's
+# "VMAE Syn -> ItW" cross-domain row in Table 4 (OF-Staged videos are not available locally,
+# see project notes).
+defaults:
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset: feature-dataset-synonly
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_val: feature-dataset-synonly-val
+  - /dataset/omnifall/videomae-kinetics-7d5fps-1f@dataset_test: feature-dataset-itwonly
+  - _self_
+
+dataset:
+  num_features: 18
+  split: "cs"
+
+dataset_test:
+  num_features: 18
+
+model:
+  num_layers: 2
+
+wandb:
+  project: "Omnifall Feature Transformer"
+  name: "Syn Only -> ItW | VMAE Kinetics 18 features | 2 Layers"

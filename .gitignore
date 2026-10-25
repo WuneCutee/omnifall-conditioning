@@ -1,0 +1,33 @@
+# dữ liệu, video, feature (tải lại theo hướng dẫn trong README)
+data/
+demo_videos/
+demo_videos.zip
+*.mp4
+*.avi
+*.h5
+*.npy
+
+# repo chính thức OmniFall — clone riêng, áp patch trong third_party/
+/omnifall-experiments/
+
+# log và kết quả trung gian tạo lại được
+*.log
+outputs_v2/logs/
+outputs_v2/logits/
+outputs_v2/app_logs/
+outputs_v2/finetune/*.pt
+outputs_v2/hybrid/*.pt
+*.pkl
+
+# môi trường, công cụ
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+node_modules/
+.vscode/
+.idea/
+deliverables/src/slides.artifact.html
+Thumbs.db
+.DS_Store
