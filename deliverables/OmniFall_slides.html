@@ -3,7 +3,7 @@
 <title>OmniFall Fallen-State Detection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: mission-control telemetry in deep space — 1600x900 stage scaled to fit over a live starfield;
    glass panels carry the evidence, a nebula tints each section, the foot scrubber reads as an orbit track. */
@@ -23,7 +23,7 @@
   --grey: #74839F;         /* baseline */
   --panel: var(--glass);
   --night-ink: var(--ink); --night-muted: var(--muted);
-  --f-display: "Chakra Petch", "Be Vietnam Pro", "Segoe UI", sans-serif;
+  --f-display: "Lexend", "Be Vietnam Pro", "Segoe UI", sans-serif;
   --f-body: "Be Vietnam Pro", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --f-mono: "JetBrains Mono", "Consolas", "SFMono-Regular", monospace;
   color-scheme: dark;
@@ -55,12 +55,12 @@ body {
 
 .slide { position: absolute; inset: 0; padding: 72px 96px 120px; display: none; flex-direction: column; gap: 28px; overflow: hidden; z-index: 1; }
 .slide.active { display: flex; }
-.eyebrow { font-family: var(--f-mono); font-size: 18px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); display: flex; gap: 18px; align-items: center; }
+.eyebrow { font-family: var(--f-body); font-weight: 600; font-size: 17px; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); display: flex; gap: 18px; align-items: center; }
 .eyebrow::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 12px var(--teal), 0 0 24px rgba(94,234,212,.5); }
-.eyebrow .tc { color: var(--muted); }
+.eyebrow .tc { display: none; }
 .eyebrow .tc::before { content: "T+"; }
 .cover .eyebrow .tc::before { content: none; }
-h1, h2 { font-family: var(--f-display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.02em; line-height: 1.12; }
 h1 { font-size: 88px; line-height: 1.04; }
 h2 { font-size: 54px; line-height: 1.1; max-width: 1320px; text-shadow: 0 0 28px rgba(138,180,255,.18); }
 .lead { font-size: 27px; line-height: 1.45; color: var(--muted); max-width: 1180px; margin: 0; }
@@ -78,7 +78,7 @@ p { margin: 0; }
   box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 40px rgba(0,0,0,.35);
 }
 .panel::after { content: ""; position: absolute; top: -1px; left: 24px; right: 24px; height: 1px; background: linear-gradient(90deg, transparent, rgba(94,234,212,.7), transparent); }
-.kicker { font-family: var(--f-mono); font-size: 16px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.kicker { font-family: var(--f-body); font-weight: 600; font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .big, .mid { font-family: var(--f-display); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
 .big { font-size: 88px; } .mid { font-size: 54px; }
 .big, .mid { text-shadow: 0 0 22px currentColor; }
@@ -91,7 +91,7 @@ ul.clean li { font-size: 23px; line-height: 1.42; padding-left: 30px; position: 
 ul.clean li::before { content: ""; position: absolute; left: 4px; top: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px var(--teal); }
 .t-fall { color: var(--amber); } .t-fallen { color: var(--red); } .t-teal { color: var(--teal); } .t-blue { color: var(--blue); }
 table.data { border-collapse: collapse; width: 100%; font-size: 20px; font-variant-numeric: tabular-nums; }
-table.data th { text-align: left; font-family: var(--f-mono); font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 400; padding: 0 12px 10px 0; border-bottom: 1.5px solid rgba(233,239,251,.55); }
+table.data th { text-align: left; font-family: var(--f-body); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 400; padding: 0 12px 10px 0; border-bottom: 1.5px solid rgba(233,239,251,.55); }
 table.data td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
 table.data td.n, table.data th.n { text-align: right; }
 table.data tr.hl td { font-weight: 600; color: var(--teal); text-shadow: 0 0 12px rgba(94,234,212,.4); }
@@ -136,14 +136,14 @@ svg text { font-family: var(--f-body); }
 .ring.r2 { width: 1060px; height: 200px; right: -360px; bottom: 60px; border-color: rgba(94,234,212,.35); box-shadow: 0 0 18px rgba(94,234,212,.2); }
 .cover > *:not(.planet):not(.ring), .finale > *:not(.planet):not(.ring) { position: relative; z-index: 1; }
 .strip { display: grid; grid-template-columns: 0.91fr 0.94fr 0.66fr 1.24fr 2.5fr; gap: 6px; margin-top: 8px; }
-.seg { height: 54px; border-radius: 8px; display: flex; align-items: center; padding: 0 14px; font-family: var(--f-mono); font-size: 16px; color: #04060E; }
+.seg { height: 54px; border-radius: 8px; display: flex; align-items: center; padding: 0 14px; font-family: var(--f-body); font-weight: 600; font-size: 17px; color: #04060E; }
 .seg small { font-size: 13px; opacity: .75; margin-left: auto; }
 .seg.hot { box-shadow: 0 0 22px rgba(255,122,122,.6); }
 
 /* orbit-track scrubber */
 .scrub { position: absolute; left: 96px; right: 190px; bottom: 40px; height: 44px; display: flex; gap: 8px; align-items: flex-end; z-index: 3; }
 .scrub .part { flex: var(--w); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.scrub .lbl { font-family: var(--f-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scrub .lbl { font-family: var(--f-body); font-weight: 600; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .scrub .bar { height: 3px; border-radius: 2px; background: rgba(150,182,235,.22); position: relative; overflow: visible; }
 .scrub .bar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--violet), var(--teal)); box-shadow: 0 0 10px rgba(94,234,212,.7); border-radius: 2px; }
 .scrub .part.on .lbl { color: var(--teal); }
@@ -194,7 +194,7 @@ svg text { font-family: var(--f-body); }
 <!-- 1 · cover -->
 <section class="slide cover" data-part="Mở đầu">
   <div class="planet" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div>
-  <div class="eyebrow">FPT University <span class="tc">· OmniFall benchmark · 2026</span></div>
+  <div class="eyebrow">FPT University <span style="color:var(--muted)">· OmniFall benchmark · 2026</span></div>
   <h1>Phát hiện người <span class="glint">đã ngã</span> từ video, từ dữ liệu tới hệ thống realtime</h1>
   <p class="lead" style="max-width:1100px">Camera nhìn thấy một người ngã: làm sao để máy tự nhận ra người đó <b>vẫn đang nằm dưới sàn</b> và báo cho người thân?</p>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
