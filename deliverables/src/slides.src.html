@@ -29,6 +29,31 @@
   </div>
 </section>
 
+<!-- 1b · example clip -->
+<section class="slide" data-part="Mở đầu">
+  <div class="eyebrow">Ví dụ thực tế <span class="tc">00</span></div>
+  <h2>Một clip thật: cú ngã kéo dài 1.2 giây, nằm lại gần 8 giây</h2>
+  <div class="grid g-62">
+    <div class="col">
+      <div class="frame" style="max-width:760px"><video id="exvid" src="media/example_fall.mp4" muted loop playsinline preload="auto" aria-label="Clip OF-ItW: một trẻ ngã khỏi đệm và nằm lại trên sàn"></video>
+        <div id="exstate" style="position:absolute;right:14px;top:14px;font-family:var(--f-mono);font-size:18px;padding:6px 14px;border-radius:99px;background:rgba(4,6,14,.75);border:1px solid var(--line)">other</div></div>
+      <div class="strip" id="exstrip" style="position:relative;max-width:760px;grid-template-columns:0.909fr 0.943fr 0.656fr 1.239fr 7.763fr">
+        <div class="seg" data-s="0" data-e="0.909" style="background:#7C8BA8">other</div>
+        <div class="seg" data-s="0.909" data-e="1.852" style="background:#5EEAD4">walk</div>
+        <div class="seg" data-s="1.852" data-e="2.508" style="background:#7C8BA8">other</div>
+        <div class="seg" data-s="2.508" data-e="3.747" style="background:#FBBF4A">fall</div>
+        <div class="seg" data-s="3.747" data-e="11.51" style="background:#FF7A7A;color:#fff">fallen</div>
+        <i id="exhead" style="position:absolute;top:-6px;bottom:-6px;width:3px;left:0;background:#fff;box-shadow:0 0 12px #fff"></i>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel col"><div class="kicker">Nhãn của clip (giây)</div><p class="small" style="font-size:20px">walk 0.91–1.85 · <span class="t-fall">fall 2.51–3.75</span> · <span class="t-fallen">fallen 3.75–11.5</span></p></div>
+      <div class="panel col"><div class="mid t-fallen">7.8 s</div><div class="small">nằm lại sau cú ngã: đây là trạng thái hệ thống cần báo động</div></div>
+      <p class="note">OF-ItW (OOPS), clip dùng cho minh hoạ nghiên cứu.</p>
+    </div>
+  </div>
+</section>
+
 <!-- 2 · problem -->
 <section class="slide" data-part="Mở đầu">
   <div class="eyebrow">Bài toán <span class="tc">01</span></div>
@@ -126,7 +151,7 @@
   <div class="grid g-62">
     <div class="col">
       <div class="frame" style="max-width:740px">
-        <img alt="Khung hình OF-ItW: một trẻ đã ngã nằm giữa phòng, một trẻ khác đứng ở mép trái" src="{{FRAME}}">
+        <video src="media/example_fall.mp4" muted loop playsinline preload="auto" aria-label="Clip ví dụ với vùng crop giữa" style="width:100%;height:100%;object-fit:cover;display:block"></video>
         <div class="shade" style="left:0;width:21.9%"></div>
         <div class="shade" style="right:0;width:21.9%"></div>
         <div class="crop" style="left:21.9%;width:56.25%;border-color:#5EEAD4"><span style="background:#5EEAD4">crop giữa · mô hình gốc chỉ thấy phần này</span></div>
@@ -135,7 +160,7 @@
         <div style="left:0;width:56.25%"><span>crop trái (TTA)</span></div>
         <div style="left:43.75%;width:56.25%;top:22px"><span>crop phải (TTA)</span></div>
       </div>
-      <p class="note">OF-ItW, giây 4.05 của clip ở trang bìa: nhãn là fallen. Người đứng bên trái nằm ngoài crop giữa.</p>
+      <p class="note">Clip ví dụ ở slide 2 phát lặp: mọi thứ ngoài khung xanh, như người đứng mép trái, mô hình gốc không nhìn thấy.</p>
     </div>
     <div class="col">
       <div class="panel col"><div class="mid">56%</div><div class="small">diện tích giữ lại (trung vị) với video 16:9; 242/818 video là video dọc</div></div>
@@ -215,7 +240,7 @@
 <!-- 13 · alarms -->
 <section class="slide" data-part="Kết quả">
   <div class="eyebrow">Báo động <span class="tc">12</span></div>
-  <h2>Ở cùng mức báo động giả, fine-tune bắt được nhiều đợt ngã hơn, nhưng recall báo động vẫn thấp</h2>
+  <h2>Ở cùng mức báo động giả, fine-tune bắt được nhiều đợt ngã hơn</h2>
   <div class="grid g-62">
     <div class="panel col"><div class="kicker">% trong 310 đợt fallen được báo động, theo số báo động giả / giờ · nhãn trên điểm = giây fallen liên tục cần để báo</div><div class="chart" id="c-alarm"></div></div>
     <div class="col">
@@ -233,44 +258,8 @@
   <div class="panel col" style="flex:1"><div class="kicker">Δ Fall∪Fallen-F1 so với đối chứng · CI 95% bootstrap theo 572 video, 10.000 lần</div><div class="chart" id="c-forest"></div></div>
 </section>
 
-<!-- 15 · app -->
-<section class="slide" data-part="Triển khai">
-  <div class="eyebrow">Ứng dụng realtime <span class="tc">14</span></div>
-  <h2>Ba luồng tách biệt: hình mượt, trễ dưới 0.1 s, báo động ghi lại có mốc thời gian</h2>
-  <div class="grid g-62">
-    <div class="col">
-      <div class="frame" style="aspect-ratio:1340/540"><img alt="Ảnh chụp ứng dụng: khung video bên trái, bảng trạng thái FALLEN và xác suất 10 lớp bên phải" src="{{APP}}"></div>
-      <p class="note">app/realtime_app.py trên clip OF-ItW: trạng thái FALLEN, fallen 44%, dòng thời gian 30 s bên dưới.</p>
-    </div>
-    <div class="col">
-      <div class="panel col"><div class="kicker">Suy luận mỗi cửa sổ · RTX 3070</div><div class="mid">40–47 ms</div><div class="small">đã gồm TTA 3 crop; hàng đợi luôn bằng 0 ở video 30 fps</div></div>
-      <div class="panel col"><div class="kicker">Báo động</div><div class="small" style="font-size:20px">Bật khi fallen liên tục ≥ 1 s, tắt sau 3 s; ghi CSV, âm báo tuỳ chọn. Phím 1–4 đổi chế độ khi đang chạy.</div></div>
-      <p class="small">Chưa thử webcam: máy hiện không có camera.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 16 · paper -->
-<section class="slide" data-part="Triển khai">
-  <div class="eyebrow">Hệ quả với bài báo <span class="tc">15</span></div>
-  <h2>Số liệu tái lập đúng, nhưng phần đánh giá cần viết lại</h2>
-  <div class="grid g2" style="align-items:start">
-    <div class="panel col"><div class="kicker">Sửa mô tả</div><ul class="clean">
-      <li>Test có 572 video, không phải 26</li>
-      <li>Taxonomy dùng 10 lớp, không phải 16</li>
-      <li>Segment lấy từ nhãn, không phải cửa sổ 2 s cố định</li>
-      <li>Fig. 2 chia theo tổng 4 cột: recall fallen thật (baseline → Hybrid) là 21.1% → 36.0%</li>
-      <li>Hybrid: 1 lớp attention, đầu vào là log-xác suất</li></ul></div>
-    <div class="panel col"><div class="kicker">Sửa kết luận</div><ul class="clean">
-      <li>Baseline 24.7 ± 0.8, không phải 26.6</li>
-      <li>Thêm đánh giá streaming và báo động làm kết quả chính</li>
-      <li>KL-anchor giảm độ lệch chuẩn 2.5 → 0.7, không tăng trung bình</li>
-      <li>Hybrid đổi Fall lấy Fallen; chuyển sang phần thảo luận</li></ul></div>
-  </div>
-</section>
-
 <!-- 17 · close -->
-<section class="slide finale" data-part="Triển khai">
+<section class="slide finale" data-part="Kết quả">
   <div class="planet" aria-hidden="true" style="width:520px;height:520px;right:-120px;bottom:-300px;background:radial-gradient(circle at 32% 26%, #5EEAD4 0%, #2B7F9E 24%, #173A6B 50%, #0A1530 74%, #04060E 100%)"></div><div class="ring" aria-hidden="true" style="width:900px;height:170px;right:-300px;bottom:30px"></div>
   <div class="eyebrow">Kết luận <span class="tc">16</span></div>
   <h2 style="font-size:64px;max-width:1350px">Cấu trúc fall → fallen là có thật, nhưng chỉ giúp được khi classifier đủ mạnh</h2>
@@ -289,6 +278,14 @@
   <button id="next" type="button" aria-label="Slide sau">›</button>
 </nav>
 
+<script>
+(function(){const v=()=>document.getElementById('exvid');
+function tick(){const vid=v();if(!vid)return;const t=vid.currentTime,d=vid.duration||11.51;const h=document.getElementById('exhead');if(h)h.style.left=(t/d*100)+'%';
+let lab='other';document.querySelectorAll('#exstrip .seg').forEach(g=>{const on=t>=+g.dataset.s&&t<+g.dataset.e;g.style.outline=on?'3px solid #fff':'none';if(on)lab=g.textContent.trim();});
+const st=document.getElementById('exstate');if(st){st.textContent=lab;st.style.color=lab==='fallen'?'#FF7A7A':lab==='fall'?'#FBBF4A':'#E9EFFB';}requestAnimationFrame(tick);}
+requestAnimationFrame(tick);
+window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=>{if(sec&&sec.contains(vid)){vid.currentTime=0;vid.play().catch(()=>{});}else vid.pause();});}};})();
+</script>
 <script>
 {{JS}}
 </script>
@@ -481,6 +478,7 @@
     count.textContent = String(cur + 1).padStart(2, '0') + ' / ' + slides.length;
     stage.dataset.neb = String(parts.indexOf(s.dataset.part));
     if (window.spaceFx) window.spaceFx.onSlide(cur);
+    if (window.exampleClip) window.exampleClip.onSlide(s);
     try { history.replaceState(null, '', '#slide-' + (cur + 1)); } catch (e) {}
   }
   function fit() { const sc = Math.min(window.innerWidth / 1600, window.innerHeight / 900); stage.style.transform = `scale(${sc})`; }
