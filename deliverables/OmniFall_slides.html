@@ -188,7 +188,7 @@ svg text { font-family: var(--f-body); }
   <div class="planet" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div>
   <div class="eyebrow">FPT University <span class="tc">· OmniFall benchmark · 2026</span></div>
   <h1>Phát hiện người <span class="glint">đã ngã</span> từ video, từ dữ liệu tới hệ thống realtime</h1>
-  <p class="lead" style="max-width:1100px">Transition-Conditioning trên OmniFall: kiểm toán dữ liệu, sửa tiền xử lý, đánh giá lại theo cách camera thật vận hành, và một ứng dụng chạy thời gian thực.</p>
+  <p class="lead" style="max-width:1100px">Camera nhìn thấy một người ngã: làm sao để máy tự nhận ra người đó <b>vẫn đang nằm dưới sàn</b> và báo cho người thân?</p>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
     <div class="kicker">Một clip OF-ItW thật · nhãn theo giây</div>
     <div class="strip">
@@ -205,7 +205,7 @@ svg text { font-family: var(--f-body); }
 <!-- 1b · example clip -->
 <section class="slide" data-part="Mở đầu">
   <div class="eyebrow">Ví dụ thực tế <span class="tc">00</span></div>
-  <h2>Một clip thật: cú ngã kéo dài 1.2 giây, nằm lại gần 8 giây</h2>
+  <h2>Ví dụ: ngã mất 1.2 giây, nhưng nằm lại gần 8 giây</h2>
   <div class="grid g-62">
     <div class="col">
       <div class="frame" style="max-width:760px"><video id="exvid" src="media/example_fall.mp4" muted loop playsinline preload="auto" aria-label="Clip OF-ItW: một trẻ ngã khỏi đệm và nằm lại trên sàn"></video>
@@ -220,9 +220,9 @@ svg text { font-family: var(--f-body); }
       </div>
     </div>
     <div class="col">
-      <div class="panel col"><div class="kicker">Nhãn của clip (giây)</div><p class="small" style="font-size:20px">walk 0.91–1.85 · <span class="t-fall">fall 2.51–3.75</span> · <span class="t-fallen">fallen 3.75–11.5</span></p></div>
-      <div class="panel col"><div class="mid t-fallen">7.8 s</div><div class="small">nằm lại sau cú ngã: đây là trạng thái hệ thống cần báo động</div></div>
-      <p class="note">OF-ItW (OOPS), clip dùng cho minh hoạ nghiên cứu.</p>
+      <div class="panel col"><div class="kicker">Clip được gán nhãn theo giây</div><p class="small" style="font-size:20px">đi bộ (walk) → <span class="t-fall">đang ngã (fall): 2.5–3.75 s</span> → <span class="t-fallen">đã ngã, nằm lại (fallen): 3.75–11.5 s</span></p></div>
+      <div class="panel col"><div class="mid t-fallen">7.8 s</div><div class="small">nằm lại sau cú ngã: đây là lúc hệ thống phải báo động</div></div>
+      <p class="note">Video thật từ bộ dữ liệu OmniFall, dùng để minh hoạ.</p>
     </div>
   </div>
 </section>
@@ -230,24 +230,24 @@ svg text { font-family: var(--f-body); }
 <!-- 2 · problem -->
 <section class="slide" data-part="Mở đầu">
   <div class="eyebrow">Bài toán <span class="tc">01</span></div>
-  <h2>Nguy hiểm nằm ở trạng thái nằm lại sau cú ngã, và đó là lớp mô hình nhận ra kém nhất</h2>
+  <h2>Mục tiêu: phát hiện người đã ngã và đang nằm lại</h2>
   <div class="grid g3" style="align-items:start;flex:none">
-    <div class="panel col"><div class="kicker">Mục tiêu</div><div class="body">Báo động khi một người <b class="t-fallen">đã ngã và chưa dậy</b> (lớp <span class="mono">fallen</span>), không chỉ khoảnh khắc ngã (<span class="mono">fall</span>).</div></div>
-    <div class="panel col"><div class="kicker">Giao thức staged → wild</div><div class="body">Huấn luyện trên video dàn dựng (St) và tổng hợp (Sy), kiểm tra trên <b>572 video tai nạn thật</b> (OF-ItW, 2.804 segment).</div></div>
-    <div class="panel col"><div class="kicker">Điểm xuất phát</div><div class="big t-fallen">24.7</div><div class="small">Fallen-F1 của baseline VideoMAE St+Sy, trung bình 10 lần đánh giá (±0.8).</div></div>
+    <div class="panel col"><div class="kicker">Cần làm gì</div><div class="body">Nhận ra người <b class="t-fallen">đã ngã và chưa dậy được</b>, không chỉ khoảnh khắc đang ngã.</div></div>
+    <div class="panel col"><div class="kicker">Khó ở đâu</div><div class="body">Mô hình học trên video quay dựng sẵn, nhưng phải chạy đúng trên <b>572 video tai nạn thật</b> chưa từng thấy.</div></div>
+    <div class="panel col"><div class="kicker">Điểm xuất phát</div><div class="big t-fallen">24.7</div><div class="small">điểm F1 cho trạng thái "đã ngã" (thang 0–100, càng cao càng tốt)</div></div>
   </div>
-  <p class="note">10 lớp lõi: walk · fall · fallen · sit_down · sitting · lie_down · lying · stand_up · standing · other</p>
+  <p class="note">Mô hình phân loại mỗi đoạn video vào 10 hành động: đi, ngã, đã ngã, ngồi xuống, đang ngồi, nằm xuống, đang nằm, đứng dậy, đang đứng, khác.</p>
 </section>
 
 <!-- 3 · idea -->
 <section class="slide" data-part="Mở đầu">
   <div class="eyebrow">Ý tưởng <span class="tc">02</span></div>
-  <h2>Gần như mọi đoạn fallen đều đến ngay sau một cú fall, nên cú fall là bằng chứng cho trạng thái kế tiếp</h2>
+  <h2>Ý tưởng: vừa thấy cú ngã thì nhiều khả năng ngay sau đó người đang nằm dưới sàn</h2>
   <div class="grid g-62">
-    <div class="panel col"><div class="kicker">Trọng số boost sau một dự đoán fall · w(Δt) = 2^(−Δt/τ)</div><div class="chart" id="c-decay"></div></div>
+    <div class="panel col"><div class="kicker">Sau khi thấy cú ngã, tăng điểm cho "đã ngã" rồi giảm dần theo thời gian</div><div class="chart" id="c-decay"></div></div>
     <div class="col">
-      <div class="panel col"><div class="mid t-fallen">96.6%</div><div class="small">segment fallen ở OF-ItW đứng ngay sau segment fall (staged 100%, OF-Syn 87.6%)</div></div>
-      <div class="panel col"><div class="mid">1.48 s</div><div class="small">khoảng cách trung vị từ đầu fall tới đầu fallen; P90 = 2.63 s, 99.8% trong vòng 10 s</div></div>
+      <div class="panel col"><div class="mid t-fallen">96.6%</div><div class="small">số đoạn "đã ngã" trong video thật đến ngay sau một cú ngã</div></div>
+      <div class="panel col"><div class="mid">1.5 s</div><div class="small">thường chỉ cách cú ngã khoảng 1.5 giây</div></div>
     </div>
   </div>
 </section>
@@ -255,72 +255,72 @@ svg text { font-family: var(--f-body); }
 <!-- 4 · data -->
 <section class="slide" data-part="Dữ liệu">
   <div class="eyebrow">Dữ liệu <span class="tc">03</span></div>
-  <h2>Năm nguồn, 13.268 video, và phân bố lớp ở tập test khác hẳn tập huấn luyện</h2>
+  <h2>Dữ liệu: 13.268 video từ 5 nguồn, video thật khác hẳn video huấn luyện</h2>
   <div class="grid g2">
     <div class="panel col">
       <table class="data">
-        <thead><tr><th>Nguồn</th><th>Miền</th><th class="n">Video</th><th class="n">Segment</th><th class="n">Giờ</th></tr></thead>
+        <thead><tr><th>Nguồn</th><th>Miền</th><th class="n">Video</th><th class="n">Đoạn</th><th class="n">Giờ</th></tr></thead>
         <tbody>
-          <tr><td>OF-Syn</td><td>Tổng hợp</td><td class="n">12.000</td><td class="n">19.228</td><td class="n">16.88</td></tr>
-          <tr><td>GMDCSA24</td><td>Dàn dựng</td><td class="n">160</td><td class="n">458</td><td class="n">0.36</td></tr>
-          <tr><td>Le2i</td><td>Dàn dựng</td><td class="n">190</td><td class="n">967</td><td class="n">0.79</td></tr>
-          <tr><td>CAUCAFall</td><td>Dàn dựng</td><td class="n">100</td><td class="n">258</td><td class="n">0.28</td></tr>
+          <tr><td>OF-Syn</td><td>Video dựng bằng máy</td><td class="n">12.000</td><td class="n">19.228</td><td class="n">16.88</td></tr>
+          <tr><td>GMDCSA24</td><td>Diễn viên đóng</td><td class="n">160</td><td class="n">458</td><td class="n">0.36</td></tr>
+          <tr><td>Le2i</td><td>Diễn viên đóng</td><td class="n">190</td><td class="n">967</td><td class="n">0.79</td></tr>
+          <tr><td>CAUCAFall</td><td>Diễn viên đóng</td><td class="n">100</td><td class="n">258</td><td class="n">0.28</td></tr>
           <tr class="hl"><td>OF-ItW</td><td>Tai nạn thật</td><td class="n">818</td><td class="n">4.022</td><td class="n">2.65</td></tr>
         </tbody>
       </table>
-      <p class="small">OF-ItW chia 165 / 81 / 572 video cho train / val / test. Không video hay người nào nằm ở hai split.</p>
+      <p class="small">Video thật được chia 165 để huấn luyện, 81 để chọn tham số, 572 để chấm điểm cuối cùng.</p>
     </div>
-    <div class="panel col"><div class="kicker">% segment theo lớp · OF-Syn (huấn luyện) so với OF-ItW test</div><div class="chart" id="c-shift"></div></div>
+    <div class="panel col"><div class="kicker">Tỉ lệ mỗi hành động: video huấn luyện (xám) và video thật (xanh)</div><div class="chart" id="c-shift"></div></div>
   </div>
 </section>
 
 <!-- 5 · pipeline -->
 <section class="slide" data-part="Dữ liệu">
   <div class="eyebrow">Xử lý dữ liệu <span class="tc">04</span></div>
-  <h2>12 bước xử lý dữ liệu, bước nào cũng có số đo kiểm chứng</h2>
+  <h2>Xử lý dữ liệu qua 12 bước, bước nào cũng được kiểm tra bằng số liệu</h2>
   <div class="pipe">
-    <div class="stagecol"><div class="kicker">A · Nhãn</div><h3>Làm sạch, kiểm toán</h3>
-      <div class="step"><b>01</b><span>Nạp 5 nguồn, 24.933 segment<em>0 nhãn ngoài 10 lớp lõi</em></span></div>
-      <div class="step"><b>02</b><span>Làm sạch có ghi vết<em>loại 5 dòng (4 end ≤ start, 1 trùng)</em></span></div>
-      <div class="step"><b>03</b><span>Kiểm tra split và rò rỉ<em>0 video, 0 người ở hai split</em></span></div>
-      <div class="step"><b>04</b><span>Toàn vẹn thời gian<em>252 segment ItW &lt; 0.5 s, giữ nguyên</em></span></div>
-      <div class="step"><b>05</b><span>Thống kê chuyển tiếp nhãn<em>92.3% cặp liền kề khác lớp</em></span></div>
+    <div class="stagecol"><div class="kicker">A · Nhãn</div><h3>Làm sạch nhãn</h3>
+      <div class="step"><b>01</b><span>Gộp 5 nguồn dữ liệu<em>24.933 đoạn, không nhãn lạ</em></span></div>
+      <div class="step"><b>02</b><span>Xoá nhãn lỗi<em>bỏ 5 dòng sai hoặc trùng</em></span></div>
+      <div class="step"><b>03</b><span>Tách riêng dữ liệu học và thi<em>không video nào bị trùng</em></span></div>
+      <div class="step"><b>04</b><span>Kiểm tra thời gian nhãn<em>252 đoạn rất ngắn, vẫn giữ</em></span></div>
+      <div class="step"><b>05</b><span>Đếm hành động nối tiếp nhau<em>ngã xong thường là nằm</em></span></div>
     </div>
-    <div class="stagecol"><div class="kicker">B · Video</div><h3>Giải mã và lấy mẫu</h3>
-      <div class="step"><b>06</b><span>Đo fps, độ phân giải, bitrate<em>154 video 23.98 fps, 242 video dọc</em></span></div>
-      <div class="step"><b>07</b><span>Lấy mẫu 7.5 fps theo đồng hồ<em>sửa lệch tới 2.18 s</em></span></div>
-      <div class="step"><b>08</b><span>Resize 224, crop trái / giữa / phải<em>center-crop chỉ giữ 56% khung</em></span></div>
+    <div class="stagecol"><div class="kicker">B · Video</div><h3>Đọc video</h3>
+      <div class="step"><b>06</b><span>Đo thông số từng video<em>154 video 24 khung/giây</em></span></div>
+      <div class="step"><b>07</b><span>Lấy ảnh theo đúng thời gian<em>sửa lệch tới 2.2 giây</em></span></div>
+      <div class="step"><b>08</b><span>Cắt ảnh trái / giữa / phải<em>để không mất 44% khung hình</em></span></div>
     </div>
-    <div class="stagecol"><div class="kicker">C · Feature</div><h3>Khung hình → chuỗi</h3>
-      <div class="step"><b>09</b><span>VideoMAE fp16, cửa sổ 16 frame<em>1 vector 768 chiều mỗi 0.133 s</em></span></div>
-      <div class="step"><b>10</b><span>Segment → 18 feature, vị trí cố định<em>bỏ dao động ±0.8 điểm</em></span></div>
-      <div class="step"><b>11</b><span>Tăng cường khi fine-tune<em>crop thời gian + không gian ngẫu nhiên</em></span></div>
+    <div class="stagecol"><div class="kicker">C · Đặc trưng</div><h3>Ảnh → con số</h3>
+      <div class="step"><b>09</b><span>Mô hình VideoMAE đọc video<em>tóm tắt mỗi 0.13 giây</em></span></div>
+      <div class="step"><b>10</b><span>Cắt đoạn cố định để chấm<em>điểm không còn dao động</em></span></div>
+      <div class="step"><b>11</b><span>Làm đa dạng dữ liệu học<em>cắt ngẫu nhiên khi huấn luyện</em></span></div>
     </div>
     <div class="stagecol"><div class="kicker">D · Realtime</div><h3>Chạy như camera</h3>
-      <div class="step"><b>12</b><span>Tiền xử lý GPU, gom pseudo-segment 0.5 s<em>cosine 0.9998 so với offline, 2.9 ms/frame</em></span></div>
-      <p class="note" style="margin-top:auto">Mã nguồn trong <span class="mono">tcfall/</span>: data · video · features · segments · preprocess_gpu</p>
+      <div class="step"><b>12</b><span>Xử lý ngay trên GPU<em>giống bản chạy chậm, 2.9 ms mỗi ảnh</em></span></div>
+      <p class="note" style="margin-top:auto">Mỗi dòng màu là con số đo được ở bước đó.</p>
     </div>
   </div>
 </section>
 
 <!-- 6 · fps drift -->
 <section class="slide" data-part="Dữ liệu">
-  <div class="eyebrow">Lỗi tiền xử lý 1 <span class="tc">05</span></div>
-  <h2>Lấy mẫu theo bước nguyên làm 154 video lệch nhãn tới 2.2 giây</h2>
+  <div class="eyebrow">Lỗi dữ liệu 1 <span class="tc">05</span></div>
+  <h2>Lỗi 1: 154 video bị lệch thời gian, nhãn trôi tới 2.2 giây</h2>
   <div class="grid g-62">
-    <div class="panel col"><div class="kicker">Lệch thời gian ở cuối video, cách lấy mẫu cũ · mỗi chấm là 1 video OOPS</div><div class="chart" id="c-drift"></div></div>
+    <div class="panel col"><div class="kicker">Mỗi chấm là một video: video càng dài, lệch càng nhiều</div><div class="chart" id="c-drift"></div></div>
     <div class="col">
-      <p class="body">Code cũ lấy 1 frame mỗi round(fps / 7.5). Với 23.98 fps, bước là 3, tức thực tế 8.0 fps, nhưng feature vẫn được gán mốc i × 2/15 s.</p>
-      <div class="panel col"><div class="mid t-fallen">104</div><div class="small">segment bị trượt quá nửa thời lượng (61 ở tập test)</div></div>
-      <p class="small">Bản sửa <span class="mono">timefix</span> chọn frame gần nhất với mốc j / 7.5 s, đúng với mọi fps.</p>
+      <p class="body">Video quay ở 24 khung hình/giây bị đọc sai tốc độ, nên hình ảnh và nhãn trôi dần khỏi nhau.</p>
+      <div class="panel col"><div class="mid t-fallen">104</div><div class="small">đoạn video bị lệch quá nửa thời lượng</div></div>
+      <p class="small">Đã sửa: đọc khung hình theo đúng thời gian thật.</p>
     </div>
   </div>
 </section>
 
 <!-- 7 · crop -->
 <section class="slide" data-part="Dữ liệu">
-  <div class="eyebrow">Lỗi tiền xử lý 2 <span class="tc">06</span></div>
-  <h2>Center-crop bỏ 44% khung hình, nên người ở mép ảnh biến mất</h2>
+  <div class="eyebrow">Lỗi dữ liệu 2 <span class="tc">06</span></div>
+  <h2>Lỗi 2: mô hình chỉ nhìn phần giữa ảnh, bỏ mất 44% khung hình</h2>
   <div class="grid g-62">
     <div class="col">
       <div class="frame" style="max-width:740px">
@@ -330,28 +330,28 @@ svg text { font-family: var(--f-body); }
         <div class="crop" style="left:21.9%;width:56.25%;border-color:#5EEAD4"><span style="background:#5EEAD4">crop giữa · mô hình gốc chỉ thấy phần này</span></div>
       </div>
       <div class="cropbars">
-        <div style="left:0;width:56.25%"><span>crop trái (TTA)</span></div>
-        <div style="left:43.75%;width:56.25%;top:22px"><span>crop phải (TTA)</span></div>
+        <div style="left:0;width:56.25%"><span>nhìn thêm bên trái</span></div>
+        <div style="left:43.75%;width:56.25%;top:22px"><span>nhìn thêm bên phải</span></div>
       </div>
-      <p class="note">Clip ví dụ ở slide 2 phát lặp: mọi thứ ngoài khung xanh, như người đứng mép trái, mô hình gốc không nhìn thấy.</p>
+      <p class="note">Phần tối hai bên là vùng mô hình gốc không nhìn thấy.</p>
     </div>
     <div class="col">
-      <div class="panel col"><div class="mid">56%</div><div class="small">diện tích giữ lại (trung vị) với video 16:9; 242/818 video là video dọc</div></div>
-      <p class="body">TTA không gian: chạy thêm crop trái và phải rồi lấy trung bình xác suất 3 crop.</p>
-      <div class="panel col"><div class="mid t-teal">+1.9</div><div class="small">Fallen-F1 khi streaming với classifier đã fine-tune, CI 95% [+0.6, +3.4]</div></div>
+      <div class="panel col"><div class="mid">56%</div><div class="small">phần khung hình mô hình gốc thực sự nhìn thấy</div></div>
+      <p class="body">Cách sửa: cho mô hình nhìn thêm phần trái và phải rồi gộp kết quả.</p>
+      <div class="panel col"><div class="mid t-teal">+1.9</div><div class="small">điểm F1 "đã ngã" tăng thêm nhờ nhìn đủ khung hình</div></div>
     </div>
   </div>
 </section>
 
 <!-- 8 · random eval -->
 <section class="slide" data-part="Dữ liệu">
-  <div class="eyebrow">Lỗi đánh giá <span class="tc">07</span></div>
-  <h2>Con số baseline 26.6 của bài báo là một lần rút may mắn</h2>
+  <div class="eyebrow">Lỗi dữ liệu 3 <span class="tc">07</span></div>
+  <h2>Lỗi 3: mỗi lần chấm điểm ra một kết quả khác nhau</h2>
   <div class="grid g-62">
-    <div class="panel col"><div class="kicker">Fallen-F1 trên test, mỗi chấm là 1 lần đánh giá với vị trí crop ngẫu nhiên</div><div class="chart" id="c-draws"></div></div>
+    <div class="panel col"><div class="kicker">Chấm cùng một mô hình 10 lần, mỗi chấm là một lần</div><div class="chart" id="c-draws"></div></div>
     <div class="col">
-      <p class="body">Code gốc chọn vị trí 18 feature trong segment ngẫu nhiên mỗi lần đánh giá. 10 lần rút cho 23.5 đến 26.0; bài báo báo cáo 26.6.</p>
-      <p class="body">Bản v2 cố định vị trí (giữa segment, hoặc trung bình nhiều vị trí), nên mọi so sánh đều lặp lại được.</p>
+      <p class="body">Cách chấm cũ cắt video ngẫu nhiên, nên điểm dao động từ 23.5 tới 26.0.</p>
+      <p class="body">Đã sửa: cắt cố định, chấm lại lần nào cũng ra cùng một kết quả.</p>
     </div>
   </div>
 </section>
@@ -359,53 +359,53 @@ svg text { font-family: var(--f-body); }
 <!-- 9 · methods -->
 <section class="slide" data-part="Phương pháp">
   <div class="eyebrow">Phương pháp <span class="tc">08</span></div>
-  <h2>Bốn cách khai thác cấu trúc hành động → trạng thái, cộng một cách thích nghi chính classifier</h2>
+  <h2>Các cách nhóm thử để cải thiện kết quả</h2>
   <div class="grid g4">
-    <div class="panel col"><div class="kicker">Không huấn luyện</div><div class="mid" style="font-size:40px">Rule</div><p class="small">Sau dự đoán fall, trộn xác suất với one-hot fallen theo 2^(−Δt/τ) trong cửa sổ W. Chọn trên val: τ = 1 s, W = 5 s.</p></div>
-    <div class="panel col"><div class="kicker">Không huấn luyện</div><div class="mid" style="font-size:40px">HMM</div><p class="small">Lọc tiến với ma trận chuyển tiếp đếm từ nhãn train, lấy mẫu mỗi 0.5 s.</p></div>
-    <div class="panel col"><div class="kicker">Học phần dư</div><div class="mid" style="font-size:40px">Hybrid</div><p class="small">Attention nhân quả 1 lớp trên log-xác suất sau rule, loss CE + λ·KL về phân phối rule (bài báo: λ = 0.3).</p></div>
-    <div class="panel col" style="border-color:var(--blue)"><div class="kicker t-blue">Dùng nhãn ItW-train</div><div class="mid t-blue" style="font-size:40px">Fine-tune</div><p class="small">Tinh chỉnh classifier trên 165 video ItW-train với crop ngẫu nhiên. lr 5e-4, 30 epoch, 3 seed. Báo cáo tách riêng.</p></div>
+    <div class="panel col"><div class="kicker">Không cần huấn luyện</div><div class="mid" style="font-size:40px">Quy tắc</div><p class="small">Vừa thấy cú ngã thì tăng điểm "đã ngã" trong vài giây sau, giảm dần theo thời gian.</p></div>
+    <div class="panel col"><div class="kicker">Không cần huấn luyện</div><div class="mid" style="font-size:40px">Chuỗi xác suất</div><p class="small">Dựa trên thống kê hành động nào hay đi sau hành động nào (mô hình HMM).</p></div>
+    <div class="panel col"><div class="kicker">Có huấn luyện</div><div class="mid" style="font-size:40px">Hybrid</div><p class="small">Một mạng nhỏ học cách chỉnh lại kết quả của quy tắc (cách của bài báo trước).</p></div>
+    <div class="panel col" style="border-color:var(--blue)"><div class="kicker t-blue">Có huấn luyện</div><div class="mid t-blue" style="font-size:40px">Học thêm video thật</div><p class="small">Huấn luyện thêm mô hình trên 165 video tai nạn thật, tách biệt với video chấm điểm.</p></div>
   </div>
-  <p class="note">Mọi tham số chọn trên ItW-val (81 video) theo (Fallen-F1 + Fall∪Fallen-F1) / 2; test chỉ chạy một lần cho cấu hình đã chọn.</p>
+  <p class="note">Mọi lựa chọn đều làm trên 81 video riêng; 572 video chấm điểm cuối chỉ dùng một lần.</p>
 </section>
 
 <!-- 10 · protocol -->
 <section class="slide" data-part="Phương pháp">
-  <div class="eyebrow">Giao thức đánh giá <span class="tc">09</span></div>
-  <h2>Đánh giá theo segment cho mô hình biết trước chỗ nhãn đổi, nên thước đo chính là streaming</h2>
+  <div class="eyebrow">Cách chấm điểm <span class="tc">09</span></div>
+  <h2>Chấm điểm như camera thật mới là cách đánh giá công bằng</h2>
   <div class="grid g2" style="align-items:start">
     <div class="panel col">
-      <div class="kicker">Theo segment · giao thức OmniFall</div>
-      <ul class="clean"><li>Ranh giới segment lấy từ nhãn; 92.3% cặp liền kề khác lớp</li><li>Classifier nhìn cả quá khứ lẫn tương lai của segment</li><li>HMM ép đổi lớp ở mỗi segment đạt <b class="t-fallen">51.3</b> Fallen-F1, không dùng được khi triển khai</li></ul>
+      <div class="kicker">Cách chấm cũ</div>
+      <ul class="clean"><li>Video đã được cắt sẵn đúng chỗ đổi hành động</li><li>Mô hình được nhìn cả đoạn phía sau</li><li>Kết quả đẹp (tới <b class="t-fallen">51.3</b>) nhưng camera thật không có thông tin này</li></ul>
     </div>
     <div class="panel col" style="border-color:var(--teal)">
-      <div class="kicker t-teal">Streaming · như camera thật</div>
-      <ul class="clean"><li>1 dự đoán mỗi 0.133 s, chỉ dùng 4.4 s quá khứ</li><li>Conditioner chạy trên pseudo-segment 0.5–1 s</li><li>So với nhãn tại t − 2.2 s (bù độ trễ của cửa sổ), và đo báo động trên 310 đợt fallen</li></ul>
+      <div class="kicker t-teal">Cách chấm mới: như camera thật</div>
+      <ul class="clean"><li>Dự đoán liên tục 7.5 lần mỗi giây</li><li>Chỉ dùng hình ảnh đã xảy ra</li><li>Đếm cả số lần báo động đúng và báo động nhầm</li></ul>
     </div>
   </div>
 </section>
 
 <!-- 11 · segment results -->
 <section class="slide" data-part="Kết quả">
-  <div class="eyebrow">Kết quả theo segment <span class="tc">10</span></div>
-  <h2>Hậu xử lý chỉ đổi Fall lấy Fallen; thích nghi classifier mới nâng được cả hai</h2>
+  <div class="eyebrow">Kết quả <span class="tc">10</span></div>
+  <h2>Huấn luyện thêm trên video thật giúp tăng mạnh nhất</h2>
   <div class="grid g2">
-    <div class="panel col"><div class="kicker">Fallen-F1 · ItW test, 2.804 segment</div><div class="chart" id="c-seg-fallen"></div></div>
-    <div class="panel col"><div class="kicker">Fall∪Fallen-F1</div><div class="chart" id="c-seg-union"></div></div>
+    <div class="panel col"><div class="kicker">Điểm F1 "đã ngã"</div><div class="chart" id="c-seg-fallen"></div></div>
+    <div class="panel col"><div class="kicker">Điểm F1 "đang ngã hoặc đã ngã"</div><div class="chart" id="c-seg-union"></div></div>
   </div>
-  <p class="note">Thanh lỗi = độ lệch chuẩn qua 3 seed (baseline: 10 lần rút). Hybrid và rule dùng ranh giới segment từ nhãn.</p>
+  <p class="note">Thanh ngang nhỏ: mức dao động giữa các lần huấn luyện.</p>
 </section>
 
 <!-- 12 · streaming -->
 <section class="slide" data-part="Kết quả">
-  <div class="eyebrow">Kết quả streaming <span class="tc">11</span></div>
-  <h2>Chạy như camera: 44.3 / 62.0 / 69.3, tăng 12–17 điểm so với hệ thống cũ</h2>
+  <div class="eyebrow">Chạy như camera <span class="tc">11</span></div>
+  <h2>Chạy như camera: hệ thống mới hơn hệ thống cũ 12–17 điểm</h2>
   <div class="grid g-62">
-    <div class="panel col"><div class="kicker">F1 trên ItW test · nhãn so tại t − 2.2 s</div><div class="chart" id="c-stream"></div></div>
+    <div class="panel col"><div class="kicker">Điểm F1 khi chạy như camera thật</div><div class="chart" id="c-stream"></div></div>
     <div class="col">
-      <p class="body">Trên baseline St+Sy, Hybrid v8 tăng Fallen nhưng làm <b class="t-fallen">Fall∪Fallen giảm 2.7</b> điểm (CI [−4.6, −0.7]).</p>
-      <p class="body">Với classifier đã fine-tune, rule thêm +3.5 / +1.6 / +1.7, CI 95% đều loại trừ 0.</p>
-      <p class="small">Nguồn: <span class="mono">outputs_v2/stream*, final/table_significance.csv</span></p>
+      <p class="body">Hệ thống mới: học thêm video thật + nhìn đủ khung hình + quy tắc "sau cú ngã là nằm".</p>
+      <p class="body">Kết quả: <b class="t-teal">44.3 / 62.0 / 69.3</b>, so với 31.9 / 45.5 / 56.8 trước đây.</p>
+      <p class="small">Cả ba mức tăng đều được kiểm chứng thống kê.</p>
     </div>
   </div>
 </section>
@@ -413,35 +413,35 @@ svg text { font-family: var(--f-body); }
 <!-- 13 · alarms -->
 <section class="slide" data-part="Kết quả">
   <div class="eyebrow">Báo động <span class="tc">12</span></div>
-  <h2>Ở cùng mức báo động giả, fine-tune bắt được nhiều đợt ngã hơn</h2>
+  <h2>Báo động: ở cùng số lần báo nhầm, hệ thống mới bắt được nhiều ca ngã hơn</h2>
   <div class="grid g-62">
-    <div class="panel col"><div class="kicker">% trong 310 đợt fallen được báo động, theo số báo động giả / giờ · nhãn trên điểm = giây fallen liên tục cần để báo</div><div class="chart" id="c-alarm"></div></div>
+    <div class="panel col"><div class="kicker">Trục ngang: số lần báo nhầm mỗi giờ · trục dọc: % ca ngã được báo</div><div class="chart" id="c-alarm"></div></div>
     <div class="col">
-      <div class="panel col"><div class="mid t-blue">16.8%</div><div class="small">đợt fallen được báo ở ~20 báo giả / giờ (fine-tune + TTA, ngưỡng 1.5 s); St+Sy chỉ ~12% ở cùng mức</div></div>
-      <p class="small">Thêm rule không đẩy đường cong lên: nó báo nhiều hơn, cả đúng lẫn giả.</p>
-      <p class="small">Báo động giả đo trên clip "fail" ngắn, nhiều chuyển động mạnh. Cần đo lại trên camera giám sát thật trước khi chọn ngưỡng.</p>
+      <div class="panel col"><div class="mid t-blue">16.8%</div><div class="small">ca ngã được báo khi chỉ cho phép khoảng 20 lần báo nhầm mỗi giờ (hệ thống cũ: 12%)</div></div>
+      <p class="small">Có thể chỉnh độ nhạy: nhạy hơn thì bắt được nhiều ca hơn nhưng báo nhầm nhiều hơn.</p>
+
     </div>
   </div>
 </section>
 
 <!-- 14 · stats -->
 <section class="slide" data-part="Kết quả">
-  <div class="eyebrow">Kiểm định thống kê <span class="tc">13</span></div>
-  <h2>Mức tăng của fine-tune vững qua cả 3 seed; Hybrid khi streaming làm hệ thống tệ đi</h2>
-  <div class="panel col" style="flex:1"><div class="kicker">Δ Fall∪Fallen-F1 so với đối chứng · CI 95% bootstrap theo 572 video, 10.000 lần</div><div class="chart" id="c-forest"></div></div>
+  <div class="eyebrow">Kiểm chứng <span class="tc">13</span></div>
+  <h2>Kiểm chứng thống kê: cải thiện là thật, không phải do may mắn</h2>
+  <div class="panel col" style="flex:1"><div class="kicker">Mức thay đổi điểm F1 · vạch nằm hẳn bên phải số 0 là cải thiện chắc chắn</div><div class="chart" id="c-forest"></div></div>
 </section>
 
 <!-- 17 · close -->
 <section class="slide finale" data-part="Kết quả">
   <div class="planet" aria-hidden="true" style="width:520px;height:520px;right:-120px;bottom:-300px;background:radial-gradient(circle at 32% 26%, #5EEAD4 0%, #2B7F9E 24%, #173A6B 50%, #0A1530 74%, #04060E 100%)"></div><div class="ring" aria-hidden="true" style="width:900px;height:170px;right:-300px;bottom:30px"></div>
   <div class="eyebrow">Kết luận <span class="tc">16</span></div>
-  <h2 style="font-size:64px;max-width:1350px">Cấu trúc fall → fallen là có thật, nhưng chỉ giúp được khi classifier đủ mạnh</h2>
+  <h2 style="font-size:64px;max-width:1350px">Biết "sau cú ngã là nằm" chỉ có ích khi mô hình đủ tốt</h2>
   <div class="grid g3" style="flex:none">
-    <div class="panel col"><div class="kicker">Dữ liệu</div><p class="small" style="font-size:21px">Sửa lấy mẫu fps, cố định vị trí đánh giá, thêm crop không gian; tách rõ nhãn oracle khỏi đánh giá.</p></div>
-    <div class="panel col"><div class="kicker">Mô hình</div><p class="small" style="font-size:21px">Fine-tune ItW + TTA + rule: 44.3 / 62.0 / 69.3 khi streaming, so với 31.9 / 45.5 / 56.8.</p></div>
-    <div class="panel col"><div class="kicker">Tiếp theo</div><p class="small" style="font-size:21px">Tải lại OF-Syn và staged để huấn luyện lại backbone với feature đúng thời gian; thử trên camera thật.</p></div>
+    <div class="panel col"><div class="kicker">Dữ liệu</div><p class="small" style="font-size:21px">Sửa 3 lỗi: lệch thời gian, cắt mất khung hình, chấm điểm không ổn định.</p></div>
+    <div class="panel col"><div class="kicker">Kết quả</div><p class="small" style="font-size:21px">Chạy như camera: 44.3 / 62.0 / 69.3, cao hơn hệ thống cũ 12–17 điểm.</p></div>
+    <div class="panel col"><div class="kicker">Tiếp theo</div><p class="small" style="font-size:21px">Huấn luyện lại với đầy đủ dữ liệu và thử trên camera trong nhà.</p></div>
   </div>
-  <p class="small" style="margin-top:auto">Mã nguồn và kết quả: omnifall-conditioning/ · tcfall/ · pipeline/ · app/ · outputs_v2/</p>
+  <p class="small" style="margin-top:auto">Mã nguồn: github.com/WuneCutee/omnifall-conditioning</p>
 </section>
 
 <div class="scrub" id="scrub" aria-hidden="true"></div>
@@ -593,16 +593,16 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
     for (let t = 0; t <= 12; t += 2) { el('line', { x1: X(t), x2: X(t), y1: T, y2: h - B, stroke: C.line }, s); el('text', { x: X(t), y: h - B + 28, 'text-anchor': 'middle', 'font-size': 16, fill: C.muted }, s, t + ' s'); }
     [0, .5, 1].forEach(v => el('text', { x: L - 12, y: Y(v) + 5, 'text-anchor': 'end', 'font-size': 16, fill: C.muted }, s, v));
     el('rect', { x: X(0), y: T, width: X(2.63) - X(0), height: h - T - B, fill: C.red, 'fill-opacity': .08 }, s);
-    el('text', { x: X(2.63) + 10, y: T + 22, 'font-size': 15, fill: C.red }, s, '90% đoạn fallen bắt đầu trong 2.63 s đầu (OF-ItW)');
+    el('text', { x: X(2.63) + 10, y: T + 22, 'font-size': 15, fill: C.red }, s, '90% ca nằm lại bắt đầu trong 2.6 s đầu');
     const curve = (tau, W, color, dash, label, lx) => {
       let d = ''; for (let t = 0.02; t <= W; t += 0.05) d += (d ? 'L' : 'M') + X(t) + ' ' + Y(Math.pow(2, -t / tau));
       el('path', { d, fill: 'none', stroke: color, 'stroke-width': 3, 'stroke-dasharray': dash || '' }, s);
       el('line', { x1: X(W), x2: X(W), y1: Y(Math.pow(2, -W / tau)), y2: Y(0), stroke: color, 'stroke-width': 2, 'stroke-dasharray': dash || '' }, s);
       el('text', { x: lx[0], y: lx[1], 'font-size': 17, fill: color, 'font-weight': 600 }, s, label);
     };
-    curve(4, 10, C.grey, '7 6', 'bài báo: τ = 4 s, W = 10 s', [X(6.6), Y(0.36) - 4]);
-    curve(1, 5, C.teal, '', 'chọn trên val: τ = 1 s, W = 5 s', [X(5.25), Y(0.03) + 6]);
-    el('text', { x: X(6), y: h - 8, 'text-anchor': 'middle', 'font-size': 16, fill: C.muted }, s, 'Δt kể từ dự đoán fall');
+    curve(4, 10, C.grey, '7 6', 'bài báo cũ: giảm chậm, kéo dài 10 s', [X(6.6), Y(0.36) - 4]);
+    curve(1, 5, C.teal, '', 'chỉnh lại: giảm nhanh, trong 5 s', [X(5.25), Y(0.03) + 6]);
+    el('text', { x: X(6), y: h - 8, 'text-anchor': 'middle', 'font-size': 16, fill: C.muted }, s, 'số giây sau cú ngã');
   })();
 
   // class shift: grouped horizontal bars
@@ -618,8 +618,8 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
       el('rect', { x: L, y: y + 19, width: X(itw[i]) - L, height: 13, rx: 2, fill: C.teal }, s);
       if (itw[i] > 20) el('text', { x: X(itw[i]) + 6, y: y + 31, 'font-size': 14, fill: C.teal, 'font-weight': 600 }, s, itw[i] + '%');
     });
-    el('rect', { x: L, y: h - 12, width: 14, height: 10, fill: C.grey }, s); el('text', { x: L + 20, y: h - 3, 'font-size': 14, fill: C.muted }, s, 'OF-Syn');
-    el('rect', { x: L + 100, y: h - 12, width: 14, height: 10, fill: C.teal }, s); el('text', { x: L + 120, y: h - 3, 'font-size': 14, fill: C.muted }, s, 'OF-ItW test');
+    el('rect', { x: L, y: h - 12, width: 14, height: 10, fill: C.grey }, s); el('text', { x: L + 20, y: h - 3, 'font-size': 14, fill: C.muted }, s, 'Video huấn luyện');
+    el('rect', { x: L + 100, y: h - 12, width: 14, height: 10, fill: C.teal }, s); el('text', { x: L + 120, y: h - 3, 'font-size': 14, fill: C.muted }, s, 'Video thật');
   })();
 
   // drift scatter (real points)
@@ -629,10 +629,10 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
     const X = d => L + Math.min(d, 66) / 66 * (w - L - R), Y = v => T + (1 - (v + 0.1) / 2.4) * (h - T - B);
     [0, 0.5, 1, 1.5, 2].forEach(v => { el('line', { x1: L, x2: w - R, y1: Y(v), y2: Y(v), stroke: C.line }, s); el('text', { x: L - 10, y: Y(v) + 5, 'text-anchor': 'end', 'font-size': 15, fill: C.muted }, s, v + ' s'); });
     [0, 10, 20, 30, 40, 50, 60].forEach(d => el('text', { x: X(d), y: h - B + 26, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, d + ' s'));
-    el('text', { x: (L + w - R) / 2, y: h - 6, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, 'thời lượng video');
+    el('text', { x: (L + w - R) / 2, y: h - 6, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, 'độ dài video');
     pts.forEach(p => el('circle', { cx: X(p[0]), cy: Y(p[1]), r: p[2] ? 4.2 : 3.2, fill: p[2] ? C.red : C.grey, 'fill-opacity': p[2] ? .8 : .45 }, s));
-    el('text', { x: X(3), y: Y(1.95), 'text-anchor': 'start', 'font-size': 16, fill: C.red, 'font-weight': 600 }, s, '23.98 fps (154 video): lệch 6.6% thời lượng');
-    el('text', { x: X(40), y: Y(0) - 12, 'font-size': 16, fill: C.muted }, s, '29.97 / 30 fps (664 video): ≈ 0');
+    el('text', { x: X(3), y: Y(1.95), 'text-anchor': 'start', 'font-size': 16, fill: C.red, 'font-weight': 600 }, s, 'video 24 khung hình/giây: lệch tăng dần');
+    el('text', { x: X(40), y: Y(0) - 12, 'font-size': 16, fill: C.muted }, s, 'video 30 khung hình/giây: không lệch');
   })();
 
   // random draws
@@ -642,21 +642,21 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
     for (let t = 23; t <= 27; t++) { el('line', { x1: X(t), x2: X(t), y1: 40, y2: 230, stroke: C.line }, s); el('text', { x: X(t), y: 262, 'text-anchor': 'middle', 'font-size': 16, fill: C.muted }, s, t); }
     el('rect', { x: X(24.7 - 0.8), y: y0 - 34, width: X(24.7 + 0.8) - X(24.7 - 0.8), height: 68, fill: C.teal, 'fill-opacity': .1 }, s);
     el('line', { x1: X(24.7), x2: X(24.7), y1: y0 - 44, y2: y0 + 44, stroke: C.teal, 'stroke-width': 2 }, s);
-    el('text', { x: X(24.7), y: y0 + 72, 'text-anchor': 'middle', 'font-size': 17, fill: C.teal, 'font-weight': 600 }, s, 'trung bình 24.7 ± 0.8');
+    el('text', { x: X(24.7), y: y0 + 72, 'text-anchor': 'middle', 'font-size': 17, fill: C.teal, 'font-weight': 600 }, s, 'trung bình 24.7');
     const seen = {};
     v.forEach(x => { const k = x.toFixed(1); seen[k] = (seen[k] || 0) + 1; el('circle', { cx: X(x), cy: y0 - 14 + (seen[k] - 1) * 26, r: 10, fill: C.grey }, s); });
     el('line', { x1: X(26.6), x2: X(26.6), y1: 40, y2: 230, stroke: C.red, 'stroke-width': 3, 'stroke-dasharray': '6 5' }, s);
-    el('text', { x: X(26.6), y: 30, 'text-anchor': 'middle', 'font-size': 17, fill: C.red, 'font-weight': 600 }, s, 'bài báo: 26.6');
+    el('text', { x: X(26.6), y: 30, 'text-anchor': 'middle', 'font-size': 17, fill: C.red, 'font-weight': 600 }, s, 'con số cũ: 26.6');
   })();
 
   // segment-level bars
   const segRows = (k) => [
-    { label: 'Baseline St+Sy', v: [24.7, 55.1][k], e: [0.8, 0.4][k], c: C.grey },
-    { label: 'Rule τ=4, W=10 (bài báo)', v: [28.9, 54.0][k], c: C.grey },
-    { label: 'Rule chọn trên val', v: [32.0, 55.4][k], c: C.grey },
-    { label: 'Hybrid v8 (bài báo)', v: [32.8, 56.7][k], e: [1.0, 0.8][k], c: C.grey },
-    { label: 'Fine-tune ItW-train', v: [44.1, 66.0][k], e: [2.6, 0.4][k], c: C.blue, bold: true },
-    { label: 'Fine-tune + TTA', v: [46.1, 66.2][k], e: [3.4, 0.5][k], c: C.blue, bold: true },
+    { label: 'Mô hình ban đầu', v: [24.7, 55.1][k], e: [0.8, 0.4][k], c: C.grey },
+    { label: 'Quy tắc (bài báo cũ)', v: [28.9, 54.0][k], c: C.grey },
+    { label: 'Quy tắc (chỉnh lại)', v: [32.0, 55.4][k], c: C.grey },
+    { label: 'Hybrid (bài báo cũ)', v: [32.8, 56.7][k], e: [1.0, 0.8][k], c: C.grey },
+    { label: 'Học thêm video thật', v: [44.1, 66.0][k], e: [2.6, 0.4][k], c: C.blue, bold: true },
+    { label: '+ nhìn đủ khung hình', v: [46.1, 66.2][k], e: [3.4, 0.5][k], c: C.blue, bold: true },
   ];
   hbars('c-seg-fallen', segRows(0), 60);
   hbars('c-seg-union', segRows(1), 80);
@@ -664,12 +664,12 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
   // streaming grouped bars
   (function () {
     const sys = [
-      { n: 'St+Sy', v: [31.9, 45.5, 56.8], c: C.grey },
-      { n: 'St+Sy + Hybrid v8', v: [37.0, 37.2, 53.1], c: C.amber },
-      { n: 'Fine-tune ItW', v: [40.8, 60.4, 67.7], c: C.blue },
-      { n: 'Fine-tune + TTA + rule', v: [44.3, 62.0, 69.3], c: C.teal },
+      { n: 'Ban đầu', v: [31.9, 45.5, 56.8], c: C.grey },
+      { n: 'Ban đầu + Hybrid', v: [37.0, 37.2, 53.1], c: C.amber },
+      { n: 'Học thêm video thật', v: [40.8, 60.4, 67.7], c: C.blue },
+      { n: 'Hệ thống mới', v: [44.3, 62.0, 69.3], c: C.teal },
     ];
-    const met = ['Fallen-F1', 'Fall-F1', 'Fall∪Fallen'];
+    const met = ['Đã ngã', 'Đang ngã', 'Ngã (gộp)'];
     const w = 960, h = 470, L = 50, B = 70, T = 24, s = svgIn('c-stream', w, h), gw = (w - L - 20) / 3, bw = 44;
     const Y = v => T + (1 - v / 80) * (h - T - B);
     [0, 20, 40, 60, 80].forEach(t => { el('line', { x1: L, x2: w - 20, y1: Y(t), y2: Y(t), stroke: C.line }, s); el('text', { x: L - 10, y: Y(t) + 5, 'text-anchor': 'end', 'font-size': 15, fill: C.muted }, s, t); });
@@ -688,15 +688,15 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
   // alarm trade-off
   (function () {
     const series = [
-      { n: 'St+Sy', c: C.grey, p: [[0, 103.9, 44.8], [0.5, 36.6, 20.6], [1, 13.6, 9.0], [1.5, 5.1, 4.8], [2, 2.6, 3.2]] },
-      { n: 'Fine-tune + TTA', c: C.blue, p: [[0, 120.1, 61.3], [0.5, 69.0, 41.6], [1, 43.5, 25.5], [1.5, 20.4, 16.8], [2, 10.2, 10.6]] },
-      { n: 'Fine-tune + TTA + rule', c: C.teal, p: [[0, 163.6, 66.8], [0.5, 129.5, 51.3], [1, 69.0, 34.5], [1.5, 30.7, 21.0], [2, 23.0, 15.2]] },
+      { n: 'Hệ thống cũ', c: C.grey, p: [[0, 103.9, 44.8], [0.5, 36.6, 20.6], [1, 13.6, 9.0], [1.5, 5.1, 4.8], [2, 2.6, 3.2]] },
+      { n: 'Học thêm + đủ khung hình', c: C.blue, p: [[0, 120.1, 61.3], [0.5, 69.0, 41.6], [1, 43.5, 25.5], [1.5, 20.4, 16.8], [2, 10.2, 10.6]] },
+      { n: 'Hệ thống mới', c: C.teal, p: [[0, 163.6, 66.8], [0.5, 129.5, 51.3], [1, 69.0, 34.5], [1.5, 30.7, 21.0], [2, 23.0, 15.2]] },
     ];
     const w = 960, h = 470, L = 70, R = 30, T = 20, B = 62, s = svgIn('c-alarm', w, h);
     const X = v => L + v / 170 * (w - L - R), Y = v => T + (1 - v / 70) * (h - T - B);
     [0, 25, 50, 75, 100, 125, 150].forEach(t => { el('line', { x1: X(t), x2: X(t), y1: T, y2: h - B, stroke: C.line }, s); el('text', { x: X(t), y: h - B + 26, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, t); });
     [0, 20, 40, 60].forEach(t => el('text', { x: L - 10, y: Y(t) + 5, 'text-anchor': 'end', 'font-size': 15, fill: C.muted }, s, t + '%'));
-    el('text', { x: (L + w - R) / 2, y: h - 6, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, 'báo động giả / giờ video');
+    el('text', { x: (L + w - R) / 2, y: h - 6, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, 'số lần báo nhầm mỗi giờ');
     series.forEach(sr => {
       el('path', { d: sr.p.map((q, i) => (i ? 'L' : 'M') + X(q[1]) + ' ' + Y(q[2])).join(''), fill: 'none', stroke: sr.c, 'stroke-width': 3 }, s);
       sr.p.forEach(q => { el('circle', { cx: X(q[1]), cy: Y(q[2]), r: 6, fill: sr.c }, s); el('text', { x: X(q[1]) + 9, y: Y(q[2]) - 9, 'font-size': 13, fill: C.muted, 'font-family': 'JetBrains Mono, monospace' }, s, q[0] + 's'); });
@@ -708,15 +708,15 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
   // forest plot
   (function () {
     const rows = [
-      { l: 'Fine-tune ItW, seed 42 (theo segment)', m: 10.1, lo: 7.5, hi: 12.7, c: C.blue },
-      { l: 'Fine-tune ItW, seed 43 (theo segment)', m: 10.6, lo: 7.9, hi: 13.2, c: C.blue },
-      { l: 'Fine-tune ItW, seed 44 (theo segment)', m: 9.8, lo: 7.0, hi: 12.4, c: C.blue },
-      { l: 'Fine-tune: + TTA + rule (streaming)', m: 1.7, lo: 0.6, hi: 2.7, c: C.teal },
-      { l: 'Fine-tune: + TTA (streaming)', m: 0.7, lo: 0.0, hi: 1.5, c: C.teal },
-      { l: 'Hybrid v8 seed 42 (theo segment)', m: 1.6, lo: 0.0, hi: 3.1, c: C.grey },
-      { l: 'Rule τ=4, W=10 (theo segment)', m: -0.2, lo: -1.6, hi: 1.2, c: C.grey },
-      { l: 'St+Sy: Hybrid v8 seed 42 (streaming)', m: -2.7, lo: -4.6, hi: -0.7, c: C.red },
-      { l: 'St+Sy: HMM (streaming)', m: -6.9, lo: -9.2, hi: -4.7, c: C.red },
+      { l: 'Học thêm video thật (lần huấn luyện 1)', m: 10.1, lo: 7.5, hi: 12.7, c: C.blue },
+      { l: 'Học thêm video thật (lần 2)', m: 10.6, lo: 7.9, hi: 13.2, c: C.blue },
+      { l: 'Học thêm video thật (lần 3)', m: 9.8, lo: 7.0, hi: 12.4, c: C.blue },
+      { l: 'Hệ thống mới, chạy như camera', m: 1.7, lo: 0.6, hi: 2.7, c: C.teal },
+      { l: 'Nhìn đủ khung hình, như camera', m: 0.7, lo: 0.0, hi: 1.5, c: C.teal },
+      { l: 'Hybrid (bài báo cũ)', m: 1.6, lo: 0.0, hi: 3.1, c: C.grey },
+      { l: 'Quy tắc (bài báo cũ)', m: -0.2, lo: -1.6, hi: 1.2, c: C.grey },
+      { l: 'Hybrid, chạy như camera', m: -2.7, lo: -4.6, hi: -0.7, c: C.red },
+      { l: 'Chuỗi xác suất, như camera', m: -6.9, lo: -9.2, hi: -4.7, c: C.red },
     ];
     const w = 1400, rowH = 46, L = 470, R = 60, h = rows.length * rowH + 50, s = svgIn('c-forest', w, h), X = v => L + (v + 10) / 24 * (w - L - R);
     [-10, -5, 0, 5, 10, 14].forEach(t => { el('line', { x1: X(t), x2: X(t), y1: 0, y2: h - 40, stroke: t === 0 ? C.ink : C.line, 'stroke-width': t === 0 ? 1.5 : 1 }, s); el('text', { x: X(t), y: h - 16, 'text-anchor': 'middle', 'font-size': 15, fill: C.muted }, s, (t > 0 ? '+' : '') + t); });
