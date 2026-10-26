@@ -31,3 +31,4 @@ node_modules/
 deliverables/src/slides.artifact.html
 Thumbs.db
 .DS_Store
+deliverables/src/*.bak
