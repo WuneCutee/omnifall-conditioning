@@ -185,6 +185,26 @@ svg text { font-family: var(--f-body); }
 .hm-h{font:500 17px/1 var(--mono, monospace);color:var(--dim, #9aa6c4);display:flex;align-items:center;justify-content:center}
 .hm-c{height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 22px/1 var(--mono, monospace);color:#fff}
 .hm-best{outline:3px solid #fff}
+
+.arch{display:flex;align-items:stretch;gap:12px;flex:1}
+.ablock{flex:1;min-width:0;position:relative;border:1px solid var(--line);border-radius:18px;padding:20px 20px 46px;background:rgba(14,22,48,.7);display:flex;flex-direction:column;gap:8px}
+.ablock.big1{flex:1.3;background:linear-gradient(160deg,rgba(124,139,168,.18),rgba(14,22,48,.75))}
+.ablock.big2{flex:1.3;border-color:var(--blue);background:linear-gradient(160deg,rgba(125,166,255,.2),rgba(14,22,48,.75));box-shadow:0 0 40px rgba(125,166,255,.18)}
+.ablock.big3{flex:1.2;border-color:var(--teal);background:linear-gradient(160deg,rgba(94,234,212,.16),rgba(14,22,48,.75))}
+.anum{font-family:var(--f-display);font-weight:700;font-size:58px;line-height:1}
+.aarr{align-self:center;font-size:34px;color:var(--teal)}
+.tag{position:absolute;left:20px;bottom:14px;font:600 13px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:rgba(233,239,251,.1);color:var(--muted)}
+.tag.tb{background:rgba(125,166,255,.2);color:var(--blue)}
+.tag.tt{background:rgba(94,234,212,.18);color:var(--teal)}
+.ftrow{display:flex;gap:14px;align-items:stretch}
+.ftrow>.panel{flex:1}
+.ftarr{align-self:center;font-size:36px;color:var(--teal)}
+ul.two{display:grid!important;grid-template-columns:1fr 1fr;gap:4px 24px;font-size:15.5px!important;line-height:1.35}
+.ftrow .big{font-size:64px}
+.arch+.grid .mid{font-size:44px}
+ul.two li{break-inside:avoid}
+.budget{display:flex;height:64px;border-radius:12px;overflow:hidden;margin:14px 0}
+.bseg{display:flex;align-items:center;padding:0 18px;font:600 18px/1 var(--f-body);color:#04060E;white-space:nowrap}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -207,78 +227,6 @@ svg text { font-family: var(--f-body); }
       <div class="seg hot" style="background:#FF7A7A;color:#fff">đã ngã <small style="color:#fff">3.75–11.5</small></div>
     </div>
     <p class="small" style="margin-top:14px">Nguyễn Duy Quân · Phạm Tuấn Vỹ · Nghiêm Thị Thu Huyền · Vũ Hoàng Anh</p>
-  </div>
-</section>
-
-<!-- 1b · example clip -->
-<section class="slide" data-part="Mở đầu">
-  <div class="eyebrow">Ví dụ thực tế <span class="tc">00</span></div>
-  <h2>Ví dụ: ngã mất 1.2 giây, nhưng nằm lại gần 8 giây</h2>
-  <div class="grid g-62">
-    <div class="col">
-      <div class="frame" style="max-width:760px"><video id="exvid" src="media/example_fall.mp4" muted loop playsinline preload="auto" aria-label="Clip OF-ItW: một trẻ ngã khỏi đệm và nằm lại trên sàn"></video>
-        <div id="exstate" style="position:absolute;right:14px;top:14px;font-family:var(--f-mono);font-size:18px;padding:6px 14px;border-radius:99px;background:rgba(4,6,14,.75);border:1px solid var(--line)">other</div></div>
-      <div class="strip" id="exstrip" style="position:relative;max-width:760px;grid-template-columns:0.909fr 0.943fr 0.656fr 1.239fr 7.763fr">
-        <div class="seg" data-s="0" data-e="0.909" style="background:#7C8BA8">other</div>
-        <div class="seg" data-s="0.909" data-e="1.852" style="background:#5EEAD4">walk</div>
-        <div class="seg" data-s="1.852" data-e="2.508" style="background:#7C8BA8">other</div>
-        <div class="seg" data-s="2.508" data-e="3.747" style="background:#FBBF4A">fall</div>
-        <div class="seg" data-s="3.747" data-e="11.51" style="background:#FF7A7A;color:#fff">fallen</div>
-        <i id="exhead" style="position:absolute;top:-6px;bottom:-6px;width:3px;left:0;background:#fff;box-shadow:0 0 12px #fff"></i>
-      </div>
-    </div>
-    <div class="col">
-      <div class="panel col"><div class="kicker">Clip được gán nhãn theo giây</div><p class="small" style="font-size:20px">đi bộ (walk) → <span class="t-fall">đang ngã (fall): 2.5–3.75 s</span> → <span class="t-fallen">đã ngã, nằm lại (fallen): 3.75–11.5 s</span></p></div>
-      <div class="panel col"><div class="mid t-fallen">7.8 s</div><div class="small">nằm lại sau cú ngã: đây là lúc hệ thống phải báo động</div></div>
-      <p class="note">Video thật từ bộ dữ liệu OmniFall, dùng để minh hoạ.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 2 · problem -->
-<section class="slide" data-part="Mở đầu">
-  <div class="eyebrow">Bài toán <span class="tc">01</span></div>
-  <h2>Mục tiêu: phát hiện người đã ngã và đang nằm lại</h2>
-  <div class="grid g3" style="align-items:start;flex:none">
-    <div class="panel col"><div class="kicker">Cần làm gì</div><div class="body">Nhận ra người <b class="t-fallen">đã ngã và chưa dậy được</b>, không chỉ khoảnh khắc đang ngã.</div></div>
-    <div class="panel col"><div class="kicker">Khó ở đâu</div><div class="body">Mô hình học trên video quay dựng sẵn, nhưng phải chạy đúng trên <b>572 video tai nạn thật</b> chưa từng thấy.</div></div>
-    <div class="panel col"><div class="kicker">Điểm xuất phát</div><div class="big t-fallen">24.7</div><div class="small">điểm F1 cho trạng thái "đã ngã" (thang 0–100, càng cao càng tốt)</div></div>
-  </div>
-  <p class="note">Mô hình phân loại mỗi đoạn video vào 10 hành động: đi, ngã, đã ngã, ngồi xuống, đang ngồi, nằm xuống, đang nằm, đứng dậy, đang đứng, khác.</p>
-</section>
-
-<!-- 3 · idea -->
-<section class="slide" data-part="Mở đầu">
-  <div class="eyebrow">Ý tưởng <span class="tc">02</span></div>
-  <h2>Ý tưởng: vừa thấy cú ngã thì nhiều khả năng ngay sau đó người đang nằm dưới sàn</h2>
-  <div class="grid g-62">
-    <div class="panel col"><div class="kicker">Sau khi thấy cú ngã, tăng điểm cho "đã ngã" rồi giảm dần theo thời gian</div><div class="chart" id="c-decay"></div></div>
-    <div class="col">
-      <div class="panel col"><div class="mid t-fallen">96.6%</div><div class="small">số đoạn "đã ngã" trong video thật đến ngay sau một cú ngã</div></div>
-      <div class="panel col"><div class="mid">1.5 s</div><div class="small">thường chỉ cách cú ngã khoảng 1.5 giây</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- 4 · data -->
-<section class="slide" data-part="Dữ liệu">
-  <div class="eyebrow">Dữ liệu <span class="tc">03</span></div>
-  <h2>Dữ liệu: 13.268 video từ 5 nguồn, video thật khác hẳn video huấn luyện</h2>
-  <div class="grid g2">
-    <div class="panel col">
-      <table class="data">
-        <thead><tr><th>Nguồn</th><th>Miền</th><th class="n">Video</th><th class="n">Đoạn</th><th class="n">Giờ</th></tr></thead>
-        <tbody>
-          <tr><td>OF-Syn</td><td>Video dựng bằng máy</td><td class="n">12.000</td><td class="n">19.228</td><td class="n">16.88</td></tr>
-          <tr><td>GMDCSA24</td><td>Diễn viên đóng</td><td class="n">160</td><td class="n">458</td><td class="n">0.36</td></tr>
-          <tr><td>Le2i</td><td>Diễn viên đóng</td><td class="n">190</td><td class="n">967</td><td class="n">0.79</td></tr>
-          <tr><td>CAUCAFall</td><td>Diễn viên đóng</td><td class="n">100</td><td class="n">258</td><td class="n">0.28</td></tr>
-          <tr class="hl"><td>OF-ItW</td><td>Tai nạn thật</td><td class="n">818</td><td class="n">4.022</td><td class="n">2.65</td></tr>
-        </tbody>
-      </table>
-      <p class="small">Video thật được chia 165 để huấn luyện, 81 để chọn tham số, 572 để chấm điểm cuối cùng.</p>
-    </div>
-    <div class="panel col"><div class="kicker">Tỉ lệ mỗi hành động: video huấn luyện (xám) và video thật (xanh)</div><div class="chart" id="c-shift"></div></div>
   </div>
 </section>
 
@@ -351,21 +299,8 @@ svg text { font-family: var(--f-body); }
   </div>
 </section>
 
-<!-- 8 · random eval -->
-<section class="slide" data-part="Dữ liệu">
-  <div class="eyebrow">Lỗi dữ liệu 3 <span class="tc">07</span></div>
-  <h2>Lỗi 3: mỗi lần chấm điểm ra một kết quả khác nhau</h2>
-  <div class="grid g-62">
-    <div class="panel col"><div class="kicker">Chấm cùng một mô hình 10 lần, mỗi chấm là một lần</div><div class="chart" id="c-draws"></div></div>
-    <div class="col">
-      <p class="body">Cách chấm cũ cắt video ngẫu nhiên, nên điểm dao động từ 23.5 tới 26.0.</p>
-      <p class="body">Đã sửa: cắt cố định, chấm lại lần nào cũng ra cùng một kết quả.</p>
-    </div>
-  </div>
-</section>
-
 <!-- 9 · methods -->
-<section class="slide" data-part="Phương pháp">
+<section class="slide" data-part="Mô hình">
   <div class="eyebrow">Phương pháp <span class="tc">08</span></div>
   <h2>Các cách nhóm thử để cải thiện kết quả</h2>
   <div class="grid g4">
@@ -379,28 +314,65 @@ svg text { font-family: var(--f-body); }
 
 
 <!-- 9b · model -->
-<section class="slide" data-part="Phương pháp">
-  <div class="eyebrow">Mô hình <span class="tc">08</span></div>
-  <h2>Mô hình: VideoMAE đọc video, một Transformer nhỏ quyết định hành động</h2>
-  <div class="flow">
-    <div class="panel col fl"><div class="kicker">1 · Đầu vào</div><div class="mid" style="font-size:34px">Video</div><p class="small">Lấy 7.5 ảnh mỗi giây, đúng theo thời gian thật; cắt trái / giữa / phải.</p></div>
-    <div class="arr">→</div>
-    <div class="panel col fl"><div class="kicker">2 · VideoMAE (giữ nguyên)</div><div class="mid" style="font-size:34px">768 số</div><p class="small">Mỗi cụm 16 ảnh thành một vector 768 chiều, cứ 0.13 giây một lần.</p></div>
-    <div class="arr">→</div>
-    <div class="panel col fl" style="border-color:var(--blue)"><div class="kicker t-blue">3 · Transformer (được huấn luyện)</div><div class="mid t-blue" style="font-size:34px">2 lớp · 8 đầu</div><p class="small">Đọc 18 vector liên tiếp (khoảng 4.4 giây) và chấm điểm 10 hành động.</p></div>
-    <div class="arr">→</div>
-    <div class="panel col fl" style="border-color:var(--teal)"><div class="kicker t-teal">4 · Quy tắc + báo động</div><div class="mid t-teal" style="font-size:34px">"Sau ngã là nằm"</div><p class="small">Thấy cú ngã thì tăng điểm "đã ngã" trong 5 giây; nằm đủ lâu thì báo.</p></div>
+<section class="slide" data-part="Mô hình">
+  <div class="eyebrow">Kiến trúc mô hình</div>
+  <h2>Hai tầng Transformer: 101 triệu tham số, ra quyết định 7.5 lần mỗi giây</h2>
+  <div class="arch">
+    <div class="ablock"><div class="kicker">Đầu vào</div><div class="anum">16 ảnh</div><p class="small">224 × 224, lấy 7.5 ảnh/giây theo đồng hồ thật</p></div>
+    <div class="aarr">→</div>
+    <div class="ablock big1"><div class="kicker">Tầng 1 · VideoMAE-Base</div><div class="anum">86M</div><p class="small">12 lớp Transformer, học sẵn trên 400 hành động (Kinetics-400). Mỗi cụm 16 ảnh → 1 vector <b>768 chiều</b>.</p><div class="tag">đóng băng</div></div>
+    <div class="aarr">→</div>
+    <div class="ablock big2"><div class="kicker">Tầng 2 · Transformer thời gian</div><div class="anum t-blue">14.8M</div><p class="small">2 lớp, 8 đầu chú ý, 768 chiều. Đọc chuỗi <b>18 vector ≈ 4.4 giây</b> → điểm cho 10 hành động.</p><div class="tag tb">fine-tune</div></div>
+    <div class="aarr">→</div>
+    <div class="ablock big3"><div class="kicker">Tầng 3 · Quy tắc chuyển trạng thái</div><div class="anum t-teal">0</div><p class="small">tham số học. Sau "đang ngã", đẩy điểm "đã ngã" trong 5 giây, giảm dần với chu kỳ bán rã 1 giây.</p><div class="tag tt">tune trên val</div></div>
   </div>
-  <div class="grid g3" style="flex:none">
-    <div class="panel col"><div class="mid">40–47 ms</div><div class="small">mỗi lần dự đoán trên RTX 3070, đủ chạy trực tiếp</div></div>
-    <div class="panel col"><div class="mid">0 tham số</div><div class="small">phần quy tắc không cần huấn luyện, không thể học vẹt</div></div>
-    <div class="panel col"><div class="mid">1 mô hình</div><div class="small">chỉ huấn luyện lại phần Transformer nhỏ, VideoMAE giữ nguyên</div></div>
+  <div class="grid g4" style="flex:none">
+    <div class="panel col"><div class="mid">0.133 s</div><div class="small">bước trượt giữa hai vector</div></div>
+    <div class="panel col"><div class="mid">× 3 góc</div><div class="small">trái / giữa / phải, lấy trung bình</div></div>
+    <div class="panel col"><div class="mid">10 lớp</div><div class="small">hành động đầu ra</div></div>
+    <div class="panel col"><div class="mid t-teal">40–47 ms</div><div class="small">mỗi lần dự đoán, RTX 3070</div></div>
   </div>
 </section>
 
+<!-- 9b2 · fine-tune -->
+<section class="slide" data-part="Mô hình">
+  <div class="eyebrow">Fine-tune</div>
+  <h2>Fine-tune trên video tai nạn thật: "đã ngã" từ 24.7 lên 44.1</h2>
+  <div class="grid g-62">
+    <div class="col">
+      <div class="ftrow">
+        <div class="panel col"><div class="kicker">Trước fine-tune</div><div class="big" style="color:var(--muted)">24.7</div><div class="small">F1 "đã ngã", mô hình chỉ học video dựng</div></div>
+        <div class="ftarr">→</div>
+        <div class="panel col" style="border-color:var(--blue)"><div class="kicker t-blue">Sau fine-tune</div><div class="big t-blue">44.1</div><div class="small">trung bình 3 lần huấn luyện (± 2.6)</div></div>
+        <div class="panel col" style="border-color:var(--teal)"><div class="kicker t-teal">Mức tăng</div><div class="big t-teal">+19.4</div><div class="small">gần gấp đôi</div></div>
+      </div>
+      <div class="panel col"><div class="kicker">Chiến lược huấn luyện</div>
+        <ul class="clean small two">
+          <li><b>Khởi tạo</b> từ checkpoint St+Sy (7.000 bước)</li>
+          <li><b>Dữ liệu</b>: 165 video thật, 809 đoạn có nhãn</li>
+          <li><b>Tăng cường</b>: ngẫu nhiên thời gian + trái / giữa / phải</li>
+          <li><b>Chống quên</b>: thử phạt L2-SP; làm mềm nhãn 0.1</li>
+          <li><b>Dừng sớm</b> theo (F1 đã ngã + F1 gộp) / 2 trên 81 video val</li>
+          <li><b>3 hạt giống</b> ngẫu nhiên, báo cáo trung bình ± độ lệch</li>
+        </ul></div>
+    </div>
+    <div class="panel col"><div class="kicker">Kết quả trên 572 video thi (3 lần)</div>
+      <table class="data">
+        <thead><tr><th>Lần</th><th class="n">Đã ngã</th><th class="n">Đang ngã</th></tr></thead>
+        <tbody>
+          <tr><td>Seed 42</td><td class="n">41.1</td><td class="n">59.6</td></tr>
+          <tr><td>Seed 43</td><td class="n">46.0</td><td class="n">58.3</td></tr>
+          <tr><td>Seed 44</td><td class="n">45.2</td><td class="n">58.1</td></tr>
+          <tr class="hl"><td>+ nhìn 3 góc</td><td class="n">45.6</td><td class="n">59.8</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Cả 3 lần đều vượt xa mô hình gốc: cải thiện không phụ thuộc may rủi.</p>
+    </div>
+  </div>
+</section>
 <!-- 9c · tuning -->
-<section class="slide" data-part="Phương pháp">
-  <div class="eyebrow">Tune mô hình <span class="tc">08</span></div>
+<section class="slide" data-part="Mô hình">
+  <div class="eyebrow">Tối ưu tham số</div>
   <h2>Tune có hệ thống: thử 225 cấu hình, chọn bằng video riêng, không nhìn đề thi</h2>
   <div class="grid g-62">
     <div class="panel col">
@@ -442,8 +414,26 @@ svg text { font-family: var(--f-body); }
   </div>
 </section>
 
+<!-- 9c2 · speed -->
+<section class="slide" data-part="Mô hình">
+  <div class="eyebrow">Tối ưu tốc độ</div>
+  <h2>Đưa tiền xử lý lên GPU: nhanh gấp 2.5 lần, kết quả gần như y hệt</h2>
+  <div class="grid g3" style="flex:none">
+    <div class="panel col"><div class="kicker">Tiền xử lý mỗi ảnh</div><div class="big t-teal">2.9 ms</div><div class="small">trên GPU, so với 7.2 ms trên CPU</div></div>
+    <div class="panel col"><div class="kicker">Giống bản gốc</div><div class="big t-blue">0.9998</div><div class="small">độ tương đồng cosine của vector đặc trưng</div></div>
+    <div class="panel col"><div class="kicker">Cùng dự đoán</div><div class="big">98.7%</div><div class="small">số khung hình ra cùng nhãn với bản gốc (1.831 ảnh, 20 video)</div></div>
+  </div>
+  <div class="panel col"><div class="kicker">Ngân sách thời gian cho một lần dự đoán (cứ 133 ms có một ảnh mới)</div>
+    <div class="budget">
+      <div class="bseg" style="width:33%;background:var(--teal)">40–47 ms · toàn bộ mô hình + 3 góc</div>
+      <div class="bseg" style="width:67%;background:rgba(233,239,251,.08);color:var(--muted)">còn dư khoảng 90 ms</div>
+    </div>
+    <p class="small">Đọc camera, chạy mô hình và vẽ cảnh báo chạy trên 3 luồng song song, nên hệ thống theo kịp thời gian thực.</p>
+  </div>
+</section>
+
 <!-- 9d · method choice -->
-<section class="slide" data-part="Phương pháp">
+<section class="slide" data-part="Mô hình">
   <div class="eyebrow">Chọn phương pháp <span class="tc">08</span></div>
   <h2>Vì sao chọn "học thêm video thật + quy tắc": tốt đều cả ba điểm</h2>
   <div class="grid g-62">
@@ -468,7 +458,7 @@ svg text { font-family: var(--f-body); }
 </section>
 
 <!-- 10 · protocol -->
-<section class="slide" data-part="Phương pháp">
+<section class="slide" data-part="Kết quả">
   <div class="eyebrow">Cách chấm điểm <span class="tc">09</span></div>
   <h2>Chấm điểm như camera thật mới là cách đánh giá công bằng</h2>
   <div class="grid g2" style="align-items:start">
@@ -668,7 +658,7 @@ window.exampleClip={onSlide(sec){document.querySelectorAll('video').forEach(vid=
   const C = { ink: '#E9EFFB', muted: '#95A6C4', line: 'rgba(150,182,235,0.16)', teal: '#5EEAD4', blue: '#8AB4FF', amber: '#FBBF4A', red: '#FF7A7A', grey: '#74839F', soft: 'rgba(94,234,212,0.15)' };
   const NS = 'http://www.w3.org/2000/svg';
   const el = (tag, attrs, parent, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; };
-  const svgIn = (id, w, h) => { const host = document.getElementById(id); const s = el('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': host.previousElementSibling ? host.previousElementSibling.textContent : '' }, host); return s; };
+  const svgIn = (id, w, h) => { const host = document.getElementById(id) || document.createElement('div'); const s = el('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-label': host.previousElementSibling ? host.previousElementSibling.textContent : '' }, host); return s; };
   const fmt = v => v.toFixed(1);
 
   // horizontal bars with optional error whiskers
