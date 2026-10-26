@@ -177,6 +177,14 @@ svg text { font-family: var(--f-body); }
 @keyframes ringspin { from { transform: rotate(-16deg); } to { transform: rotate(-12deg) translateY(-8px); } }
 @keyframes hot { 0%, 100% { box-shadow: 0 0 14px rgba(255,122,122,.45); } 50% { box-shadow: 0 0 30px rgba(255,122,122,.85); } }
 
+
+.flow{display:flex;align-items:stretch;gap:14px;flex:1}
+.flow .fl{flex:1;min-width:0}
+.flow .arr{align-self:center;font-size:40px;color:var(--teal)}
+.hm{display:grid;grid-template-columns:130px repeat(3,1fr);gap:5px;margin:4px 0}
+.hm-h{font:500 17px/1 var(--mono, monospace);color:var(--dim, #9aa6c4);display:flex;align-items:center;justify-content:center}
+.hm-c{height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 22px/1 var(--mono, monospace);color:#fff}
+.hm-best{outline:3px solid #fff}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -367,6 +375,96 @@ svg text { font-family: var(--f-body); }
     <div class="panel col" style="border-color:var(--blue)"><div class="kicker t-blue">Có huấn luyện</div><div class="mid t-blue" style="font-size:40px">Học thêm video thật</div><p class="small">Huấn luyện thêm mô hình trên 165 video tai nạn thật, tách biệt với video chấm điểm.</p></div>
   </div>
   <p class="note">Mọi lựa chọn đều làm trên 81 video riêng; 572 video chấm điểm cuối chỉ dùng một lần.</p>
+</section>
+
+
+<!-- 9b · model -->
+<section class="slide" data-part="Phương pháp">
+  <div class="eyebrow">Mô hình <span class="tc">08</span></div>
+  <h2>Mô hình: VideoMAE đọc video, một Transformer nhỏ quyết định hành động</h2>
+  <div class="flow">
+    <div class="panel col fl"><div class="kicker">1 · Đầu vào</div><div class="mid" style="font-size:34px">Video</div><p class="small">Lấy 7.5 ảnh mỗi giây, đúng theo thời gian thật; cắt trái / giữa / phải.</p></div>
+    <div class="arr">→</div>
+    <div class="panel col fl"><div class="kicker">2 · VideoMAE (giữ nguyên)</div><div class="mid" style="font-size:34px">768 số</div><p class="small">Mỗi cụm 16 ảnh thành một vector 768 chiều, cứ 0.13 giây một lần.</p></div>
+    <div class="arr">→</div>
+    <div class="panel col fl" style="border-color:var(--blue)"><div class="kicker t-blue">3 · Transformer (được huấn luyện)</div><div class="mid t-blue" style="font-size:34px">2 lớp · 8 đầu</div><p class="small">Đọc 18 vector liên tiếp (khoảng 4.4 giây) và chấm điểm 10 hành động.</p></div>
+    <div class="arr">→</div>
+    <div class="panel col fl" style="border-color:var(--teal)"><div class="kicker t-teal">4 · Quy tắc + báo động</div><div class="mid t-teal" style="font-size:34px">"Sau ngã là nằm"</div><p class="small">Thấy cú ngã thì tăng điểm "đã ngã" trong 5 giây; nằm đủ lâu thì báo.</p></div>
+  </div>
+  <div class="grid g3" style="flex:none">
+    <div class="panel col"><div class="mid">40–47 ms</div><div class="small">mỗi lần dự đoán trên RTX 3070, đủ chạy trực tiếp</div></div>
+    <div class="panel col"><div class="mid">0 tham số</div><div class="small">phần quy tắc không cần huấn luyện, không thể học vẹt</div></div>
+    <div class="panel col"><div class="mid">1 mô hình</div><div class="small">chỉ huấn luyện lại phần Transformer nhỏ, VideoMAE giữ nguyên</div></div>
+  </div>
+</section>
+
+<!-- 9c · tuning -->
+<section class="slide" data-part="Phương pháp">
+  <div class="eyebrow">Tune mô hình <span class="tc">08</span></div>
+  <h2>Tune có hệ thống: thử 225 cấu hình, chọn bằng video riêng, không nhìn đề thi</h2>
+  <div class="grid g-62">
+    <div class="panel col">
+      <div class="kicker">Học thêm video thật: điểm trên 81 video kiểm tra theo tốc độ học (lr) và mức giữ mô hình gốc (λ)</div>
+      <div class="hm">
+        <div class="hm-h"></div>
+        <div class="hm-h">λ = 0</div>
+        <div class="hm-h">λ = 0.001</div>
+        <div class="hm-h">λ = 0.01</div>
+        <div class="hm-h">lr 1e-5</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.23)">55.2</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.22)">55.1</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.14)">54.2</div>
+        <div class="hm-h">lr 3e-5</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.42)">57.1</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.43)">57.3</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.33)">56.2</div>
+        <div class="hm-h">lr 1e-4</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.71)">60.3</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.58)">58.9</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.52)">58.3</div>
+        <div class="hm-h">lr 2e-4</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.87)">62.0</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.71)">60.3</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.55)">58.6</div>
+        <div class="hm-h">lr 5e-4</div>
+        <div class="hm-c hm-best" style="background:rgba(94,234,212,0.89)">62.2</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.81)">61.3</div>
+        <div class="hm-c" style="background:rgba(94,234,212,0.73)">60.5</div>
+      </div>
+      <p class="small">Ô sáng nhất (lr 5e-4, λ = 0) được chọn, rồi huấn luyện lại 3 lần để chắc kết quả ổn định.</p>
+    </div>
+    <div class="col">
+      <div class="panel col"><div class="kicker">Công thức huấn luyện</div>
+        <ul class="clean small"><li>AdamW, 30 vòng, lô 32</li><li>Làm mềm nhãn 0.1</li><li>Cắt ngẫu nhiên thời gian + trái / giữa / phải</li><li>Giữ vòng có điểm kiểm tra cao nhất</li></ul></div>
+      <div class="panel col"><div class="kicker">Số cấu hình đã thử</div>
+        <ul class="clean small"><li><b>15</b> cấu hình học thêm video thật</li><li><b>42</b> quy tắc · <b>48</b> HMM · <b>120</b> khi chạy như camera</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9d · method choice -->
+<section class="slide" data-part="Phương pháp">
+  <div class="eyebrow">Chọn phương pháp <span class="tc">08</span></div>
+  <h2>Vì sao chọn "học thêm video thật + quy tắc": tốt đều cả ba điểm</h2>
+  <div class="grid g-62">
+    <div class="panel col">
+      <div class="kicker">Cùng mô hình đã học thêm, chạy như camera, thêm từng cách xử lý phía sau</div>
+      <table class="data">
+        <thead><tr><th>Cách xử lý phía sau</th><th class="n">Đã ngã</th><th class="n">Đang ngã</th><th class="n">Gộp</th><th>Cần huấn luyện</th></tr></thead>
+        <tbody>
+          <tr><td>Không thêm gì</td><td class="n">42.7</td><td class="n">60.9</td><td class="n">68.4</td><td>Không</td></tr>
+          <tr><td>Chuỗi xác suất (HMM)</td><td class="n">44.2</td><td class="n">53.4</td><td class="n">62.3</td><td>Không</td></tr>
+          <tr><td>Hybrid (bài báo cũ)</td><td class="n">45.7</td><td class="n">56.1</td><td class="n">66.2</td><td>Có, 3 lần</td></tr>
+          <tr class="hl"><td>Quy tắc (nhóm chọn)</td><td class="n">44.3</td><td class="n">62.0</td><td class="n">69.3</td><td>Không</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <p class="body">HMM và Hybrid nâng "đã ngã" nhưng làm <b>mất 5–8 điểm "đang ngã"</b>: chúng đoán "nằm" quá sớm.</p>
+      <p class="body">Quy tắc là cách <b class="t-teal">duy nhất tăng cả ba điểm</b>, không cần huấn luyện và chạy gần như không tốn thời gian.</p>
+      <div class="panel col"><div class="mid t-teal" style="font-size:44px">+12.4 · +16.5 · +12.5</div><div class="small">so với hệ thống cũ, ở cả ba điểm</div></div>
+    </div>
+  </div>
 </section>
 
 <!-- 10 · protocol -->
