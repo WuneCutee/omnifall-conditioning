@@ -205,6 +205,17 @@ ul.two{display:grid!important;grid-template-columns:1fr 1fr;gap:4px 24px;font-si
 ul.two li{break-inside:avoid}
 .budget{display:flex;height:64px;border-radius:12px;overflow:hidden;margin:14px 0}
 .bseg{display:flex;align-items:center;padding:0 18px;font:600 18px/1 var(--f-body);color:#04060E;white-space:nowrap}
+
+.tp{display:flex;align-items:stretch;gap:8px;flex:1;margin-top:6px}
+.tps{flex:1;min-width:0;position:relative;border:1px solid var(--line);border-radius:16px;padding:18px 16px 54px;background:rgba(14,22,48,.72);display:flex;flex-direction:column;gap:6px}
+.tps h3{margin:0;font-family:var(--f-display);font-weight:600;font-size:24px;line-height:1.15}
+.tps.hot{border-color:var(--blue);box-shadow:0 0 36px rgba(125,166,255,.2);background:linear-gradient(160deg,rgba(125,166,255,.18),rgba(14,22,48,.75))}
+.tpn{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1;color:var(--teal);text-shadow:0 0 14px rgba(94,234,212,.5)}
+.tpa{align-self:center;font-size:26px;color:var(--teal)}
+.dtag{position:absolute;left:16px;right:16px;bottom:14px;font:600 13px/1.2 var(--f-body);padding:7px 10px;border-radius:10px;text-align:center;color:#04060E}
+.d-src{background:#7C8BA8}.d-tr{background:#7DA6FF}.d-va{background:#FBBF4A}.d-te{background:#FF7A7A}.d-cam{background:#5EEAD4}
+.tplegend{display:flex;flex-wrap:wrap;gap:10px 28px;font:500 16px/1.3 var(--f-body);color:var(--muted)}
+.tplegend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:8px;vertical-align:-2px}
 </style>
 
 <canvas id="sky" aria-hidden="true"></canvas>
@@ -312,6 +323,31 @@ ul.two li{break-inside:avoid}
   <p class="note">Mọi lựa chọn đều làm trên 81 video riêng; 572 video chấm điểm cuối chỉ dùng một lần.</p>
 </section>
 
+
+<!-- 9a · training pipeline -->
+<section class="slide" data-part="Mô hình">
+  <div class="eyebrow">Pipeline mô hình</div>
+  <h2>Pipeline huấn luyện: 6 bước, tập test chỉ được chạm đúng một lần</h2>
+  <div class="tp">
+    <div class="tps"><div class="tpn">1</div><div class="kicker">Học nền</div><h3>Mô hình gốc</h3><p class="small">Transformer học trên 12.000 video tổng hợp + 3 bộ diễn viên đóng (checkpoint OmniFall)</p><div class="dtag d-src">video dựng</div></div>
+    <div class="tpa">→</div>
+    <div class="tps hot"><div class="tpn">2</div><div class="kicker">Fine-tune</div><h3>Học video thật</h3><p class="small">30 epoch × 3 seed, tăng cường thời gian + 3 góc ảnh</p><div class="dtag d-tr">165 video train</div></div>
+    <div class="tpa">→</div>
+    <div class="tps"><div class="tpn">3</div><div class="kicker">Dừng sớm</div><h3>Chọn epoch</h3><p class="small">Giữ epoch có (F1 đã ngã + F1 gộp) / 2 cao nhất</p><div class="dtag d-va">81 video val</div></div>
+    <div class="tpa">→</div>
+    <div class="tps"><div class="tpn">4</div><div class="kicker">Tối ưu</div><h3>Dò 225 cấu hình</h3><p class="small">lr, L2-SP, quy tắc, HMM, Hybrid, chế độ chạy như camera</p><div class="dtag d-va">81 video val</div></div>
+    <div class="tpa">→</div>
+    <div class="tps"><div class="tpn">5</div><div class="kicker">Chấm điểm</div><h3>Test một lần</h3><p class="small">Cấu hình tốt nhất được khoá lại rồi mới chấm, chạy như camera</p><div class="dtag d-te">572 video test</div></div>
+    <div class="tpa">→</div>
+    <div class="tps"><div class="tpn">6</div><div class="kicker">Triển khai</div><h3>Chạy realtime</h3><p class="small">Webcam / video, 3 luồng song song, 40–47 ms mỗi lần</p><div class="dtag d-cam">camera</div></div>
+  </div>
+  <div class="tplegend">
+    <span><i class="d-src"></i>Video dựng: chỉ để học nền</span>
+    <span><i class="d-tr"></i>Train: 165 video thật (20%)</span>
+    <span><i class="d-va"></i>Val: 81 video (10%), mọi lựa chọn</span>
+    <span><i class="d-te"></i>Test: 572 video (70%), chấm 1 lần</span>
+  </div>
+</section>
 
 <!-- 9b · model -->
 <section class="slide" data-part="Mô hình">
