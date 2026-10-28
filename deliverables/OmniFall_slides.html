@@ -435,23 +435,23 @@ ul.two li{break-inside:avoid}
 <!-- 9d · method choice -->
 <section class="slide" data-part="Mô hình">
   <div class="eyebrow">Chọn phương pháp <span class="tc">08</span></div>
-  <h2>Vì sao chọn "học thêm video thật + quy tắc": tốt đều cả ba điểm</h2>
+  <h2>Vì sao chọn "fine-tune + quy tắc": tốt đều cả ba điểm</h2>
   <div class="grid g-62">
     <div class="panel col">
-      <div class="kicker">Cùng mô hình đã học thêm, chạy như camera, thêm từng cách xử lý phía sau</div>
+      <div class="kicker">Cả 4 dòng dùng chung mô hình đã fine-tune · chỉ khác bước xử lý gắn phía sau</div>
       <table class="data">
-        <thead><tr><th>Cách xử lý phía sau</th><th class="n">Đã ngã</th><th class="n">Đang ngã</th><th class="n">Gộp</th><th>Cần huấn luyện</th></tr></thead>
+        <thead><tr><th>Cách xử lý phía sau</th><th class="n">Đã ngã</th><th class="n">Đang ngã</th><th class="n">Gộp</th><th>Bước sau cần train thêm?</th></tr></thead>
         <tbody>
-          <tr><td>Không thêm gì</td><td class="n">42.7</td><td class="n">60.9</td><td class="n">68.4</td><td>Không</td></tr>
-          <tr><td>Chuỗi xác suất (HMM)</td><td class="n">44.2</td><td class="n">53.4</td><td class="n">62.3</td><td>Không</td></tr>
-          <tr><td>Hybrid (bài báo cũ)</td><td class="n">45.7</td><td class="n">56.1</td><td class="n">66.2</td><td>Có, 3 lần</td></tr>
-          <tr class="hl"><td>Quy tắc (nhóm chọn)</td><td class="n">44.3</td><td class="n">62.0</td><td class="n">69.3</td><td>Không</td></tr>
+          <tr><td>Không thêm gì</td><td class="n">42.7</td><td class="n">60.9</td><td class="n">68.4</td><td>—</td></tr>
+          <tr><td>Chuỗi xác suất (HMM)</td><td class="n">44.2</td><td class="n">53.4</td><td class="n">62.3</td><td>Không (chỉ dò tham số)</td></tr>
+          <tr><td>Hybrid (bài báo cũ)</td><td class="n">45.7</td><td class="n">56.1</td><td class="n">66.2</td><td>Có (mạng riêng, 3 lần)</td></tr>
+          <tr class="hl"><td>Quy tắc (nhóm chọn)</td><td class="n">44.3</td><td class="n">62.0</td><td class="n">69.3</td><td>Không (chỉ dò tham số)</td></tr>
         </tbody>
       </table>
     </div>
     <div class="col">
       <p class="body">HMM và Hybrid nâng "đã ngã" nhưng làm <b>mất 5–8 điểm "đang ngã"</b>: chúng đoán "nằm" quá sớm.</p>
-      <p class="body">Quy tắc là cách <b class="t-teal">duy nhất tăng cả ba điểm</b>, không cần huấn luyện và chạy gần như không tốn thời gian.</p>
+      <p class="body">Quy tắc là cách <b class="t-teal">duy nhất tăng cả ba điểm</b>, không cần train thêm mạng nào và chạy gần như không tốn thời gian.</p>
       <div class="panel col"><div class="mid t-teal" style="font-size:44px">+12.4 · +16.5 · +12.5</div><div class="small">so với hệ thống cũ, ở cả ba điểm</div></div>
     </div>
   </div>
