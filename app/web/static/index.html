@@ -183,26 +183,37 @@ document.getElementById("camStart").onclick = async ()=>{
   try{
     const id = document.getElementById("camDevice").value;
     stream = await navigator.mediaDevices.getUserMedia({video: id?{deviceId:{exact:id},width:640,height:480}:{width:640,height:480}, audio:false});
-  }catch(e){ alert("Không mở được camera: "+e.message); return; }
+  }catch(e){ camMsg("Không mở được camera: "+e.name+" — "+e.message+(isSecureContext?"":" (trang phải mở bằng https hoặc localhost)")); return; }
   camVideo.srcObject = stream; document.getElementById("camPh").hidden = true; listCams();
+  stream.getVideoTracks()[0].onended = ()=>stopCam("Camera bị ngắt (thiết bị bị rút hoặc ứng dụng khác chiếm camera).");
+  connectWs();
+};
+
+function camMsg(t){ const ph=document.getElementById("camPh"); ph.hidden=false; ph.innerHTML=t; }
+
+function connectWs(retry=0){
   const proto = location.protocol==="https:"?"wss":"ws";
   ws = new WebSocket(`${proto}://${location.host}/ws/camera?mode=${document.getElementById("camMode").value}`);
   ws.binaryType = "arraybuffer";
   ws.onmessage = ev=>{
     inflight = Math.max(0,inflight-1); const s = JSON.parse(ev.data);
-    if(s.error){ alert(s.error); stopCam(); return; }
+    if(s.error){ stopCam(s.error); return; }
     camBadge.hidden=false; camBadge.textContent = `${s.t.toFixed(1)}s · ${s.ready?s.label:"warmup"}`;
     document.getElementById("camStage").style.borderColor = ST_COLORS[s.status];
     s.meta = `thiết bị: ${INFO.device} · TTA không gian: ${INFO.spatial_tta?"bật":"tắt"}<br>suy luận: ${s.latency_ms} ms/cửa sổ · gửi: ${fpsShow.toFixed(1)} fps`;
     camPanel.update(s);
   };
-  ws.onclose = ()=>stopCam();
+  ws.onclose = ev=>{
+    if(!stream) return;                                  // người dùng đã bấm Dừng
+    if(retry<3){ clearInterval(timer); ws=null; setTimeout(()=>connectWs(retry+1),1000); return; }   // tự nối lại
+    stopCam(`Mất kết nối tới server (mã ${ev.code}). Kiểm tra server còn chạy không rồi bấm Bật camera lại.`);
+  };
   ws.onopen = ()=>{
     t0 = performance.now(); camPanel.reset();
     document.getElementById("camStart").disabled=true; document.getElementById("camStop").disabled=false; document.getElementById("camReset").disabled=false;
-    timer = setInterval(sendFrame, 100);   // ~10 fps; server tự lấy mẫu về 7.5 fps
+    clearInterval(timer); timer = setInterval(sendFrame, 100);   // ~10 fps; server tự lấy mẫu về 7.5 fps
   };
-};
+}
 
 function sendFrame(){
   if(!ws||ws.readyState!==1||!camVideo.videoWidth||inflight>2) return;
@@ -218,15 +229,17 @@ function sendFrame(){
   },"image/jpeg",0.8);
 }
 
-function stopCam(){
+function stopCam(reason){
   clearInterval(timer); timer=null;
+  const s0=stream; stream=null;
   if(ws){ try{ws.close()}catch(e){} ws=null; }
-  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
-  camVideo.srcObject=null; document.getElementById("camPh").hidden=false; camBadge.hidden=true;
+  if(s0){ s0.getTracks().forEach(t=>t.stop()); }
+  camVideo.srcObject=null; camBadge.hidden=true;
+  camMsg(typeof reason==="string" ? "⚠ "+reason : 'Bấm <b>Bật camera</b> để bắt đầu.<br>Mô hình cần khoảng 5 giây khởi động.');
   document.getElementById("camStage").style.borderColor="";
   document.getElementById("camStart").disabled=false; document.getElementById("camStop").disabled=true; document.getElementById("camReset").disabled=true;
 }
-document.getElementById("camStop").onclick = stopCam;
+document.getElementById("camStop").onclick = ()=>stopCam();
 document.getElementById("camReset").onclick = ()=>{ if(ws&&ws.readyState===1){ ws.send(JSON.stringify({reset:true})); t0=performance.now(); camPanel.reset(); } };
 document.getElementById("camMode").onchange = e=>{ if(ws&&ws.readyState===1) ws.send(JSON.stringify({mode:e.target.value})); };
 
