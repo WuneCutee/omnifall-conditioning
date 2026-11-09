@@ -7,7 +7,7 @@ Chạy:
     và trả trạng thái (nhãn, xác suất 10 lớp, cảnh báo) cho mỗi frame được lấy mẫu.
   * Upload: video được xử lý ở nền (mọi frame, không bỏ frame), trả video đã gắn nhãn
     + dòng thời gian dự đoán để xem lại.
-Mô hình chỉ được nạp 1 lần; một khoá đảm bảo mỗi lúc chỉ 1 phiên dùng GPU.
+Camera và upload dùng 2 engine riêng nên chạy song song; video upload xử lý lần lượt.
 """
 from __future__ import annotations
 
@@ -41,9 +41,12 @@ JOBS_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Fall detection demo")
 print("Đang tải VideoMAE + classifier + conditioner ...")
-ENGINE = build_engine()
+# 2 engine riêng: camera và upload chạy song song, không phải chờ nhau
+ENGINE = build_engine()          # camera realtime
+UP_ENGINE = build_engine()       # xử lý video upload
 DEFAULT_MODE = ENGINE.cfg.mode
-GPU_LOCK = threading.Lock()
+UP_LOCK = threading.Lock()       # các video upload xử lý lần lượt
+CAM_SESSION = {"id": None}       # phiên camera mới nhất được dùng engine, phiên cũ tự dừng
 JOBS: dict[str, dict] = {}
 
 
@@ -66,9 +69,8 @@ def info():
 @app.websocket("/ws/camera")
 async def ws_camera(ws: WebSocket):
     await ws.accept()
-    if not GPU_LOCK.acquire(blocking=False):
-        await ws.send_json({"error": "Mô hình đang bận (đang xử lý video khác hoặc phiên camera khác)."})
-        await ws.close(); return
+    sid = uuid.uuid4().hex
+    CAM_SESSION["id"] = sid
     try:
         ENGINE.cfg.mode = ws.query_params.get("mode", DEFAULT_MODE)
         ENGINE.reset()
@@ -76,6 +78,9 @@ async def ws_camera(ws: WebSocket):
             msg = await ws.receive()
             if msg.get("type") == "websocket.disconnect":
                 break
+            if CAM_SESSION["id"] != sid:
+                await ws.send_json({"error": "Camera đã được mở ở tab hoặc máy khác, phiên này dừng lại."})
+                await ws.close(); break
             if msg.get("text"):
                 cmd = json.loads(msg["text"])
                 if cmd.get("mode") in MODES:
@@ -93,21 +98,19 @@ async def ws_camera(ws: WebSocket):
             rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
             sampled = await asyncio.to_thread(lambda: ENGINE.push_frame(rgb, t) and [ENGINE.step() for _ in range(4)])
             await ws.send_json({**engine_snapshot(), "sampled": bool(sampled)})
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         pass
-    finally:
-        GPU_LOCK.release()
 
 
 # ------------------------------------------------------------------ upload video
 def run_job(job_id: str, src: Path, mode: str):
     job = JOBS[job_id]
-    with GPU_LOCK:
+    with UP_LOCK:
         job["state"] = "running"
         try:
-            ENGINE.cfg.mode = mode
+            UP_ENGINE.cfg.mode = mode
             raw = src.with_name("annotated_raw.mp4")
-            res = annotate(ENGINE, str(src), str(raw), height=540,
+            res = annotate(UP_ENGINE, str(src), str(raw), height=540,
                            progress=lambda p: job.update(progress=round(p, 3)))
             out = src.with_name("annotated.mp4")
             ff = shutil.which("ffmpeg")
@@ -122,7 +125,7 @@ def run_job(job_id: str, src: Path, mode: str):
         except Exception as e:  # báo lỗi cho giao diện thay vì treo
             job.update(state="error", error=str(e))
         finally:
-            ENGINE.cfg.mode = DEFAULT_MODE
+            UP_ENGINE.cfg.mode = DEFAULT_MODE
 
 
 @app.post("/api/upload")

@@ -161,6 +161,7 @@ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));
   document.getElementById("cam").hidden = b.dataset.tab!=="cam";
   document.getElementById("up").hidden = b.dataset.tab!=="up";
+  if(b.dataset.tab==="up" && (stream||ws)) stopCam();   // sang tab Upload thì tự tắt camera
 });
 
 function fillModes(sel){ sel.innerHTML = INFO.modes.map(m=>`<option ${m===INFO.default_mode?"selected":""}>${m}</option>`).join(""); }
@@ -264,23 +265,22 @@ function showResult(j){
   upRes = j.result; document.getElementById("upWork").hidden=true; document.getElementById("upResult").hidden=false;
   const v = document.getElementById("upVideo"); v.src = j.video+"?"+Date.now();
   const strip = document.getElementById("upStrip"); strip.innerHTML="";
-  const tl = upRes.timeline, D = upRes.duration;
+  // video kết quả bắt đầu từ lúc mô hình sẵn sàng: thời gian gốc = currentTime + S
+  const tl = upRes.timeline, S = upRes.start||0, D = upRes.duration - S;
   for(let i=0;i<tl.length;i++){ const k=tl[i].probs.indexOf(Math.max(...tl[i].probs));
-    const w=((tl[i+1]?.t??D)-tl[i].t)/D*100; strip.insertAdjacentHTML("beforeend",`<span title="${tl[i].t}s ${INFO.classes[k]}" style="width:${w}%;background:${CLS_COLORS[k]}"></span>`); }
-  const first = tl.length?tl[0].t:0;
-  strip.firstElementChild && (strip.insertAdjacentHTML("afterbegin",`<span style="width:${first/D*100}%;background:#30363d"></span>`));
+    const w=((tl[i+1]?.t??(D+S))-tl[i].t)/D*100; strip.insertAdjacentHTML("beforeend",`<span title="${tl[i].t}s ${INFO.classes[k]}" style="width:${w}%;background:${CLS_COLORS[k]}"></span>`); }
   strip.onclick = e=>{ const r=strip.getBoundingClientRect(); v.currentTime=(e.clientX-r.left)/r.width*D; };
   upPanel.reset(); upPanel.hist=[];
-  upPanel.onSeek = t=>{ v.currentTime=Math.max(0,t-2); v.play(); };
+  upPanel.onSeek = t=>{ v.currentTime=Math.max(0,t-S-2); v.play(); };
   v.ontimeupdate = ()=>{
-    const t=v.currentTime; let lo=0,hi=tl.length-1,idx=-1;
+    const t=v.currentTime+S; let lo=0,hi=tl.length-1,idx=-1;
     while(lo<=hi){ const m=(lo+hi)>>1; if(tl[m].t<=t){idx=m;lo=m+1}else hi=m-1; }
     const r = idx>=0?tl[idx]:null;
     upPanel.hist = tl.slice(Math.max(0,idx-300),idx+1).filter(x=>t-x.t<=30).map(x=>[x.t,x.probs.indexOf(Math.max(...x.probs))]);
     if(r) { upPanel.hist.pop(); }
     upPanel.update({t, ready:!!r, status:r?r.status:"WARMUP", label:r?r.label:"warmup", probs:r?r.probs:new Array(10).fill(0.1),
       alarms: upRes.alarms.filter(a=>a<=t),
-      meta:`thời lượng: ${D.toFixed(1)} s · ${upRes.fps.toFixed(1)} fps<br>tổng số cảnh báo: ${upRes.alarms.length} (${upRes.alarms.map(a=>a.toFixed(1)+"s").join(", ")||"không có"})`});
+      meta:`thời lượng: ${(D+S).toFixed(1)} s (bỏ ${S.toFixed(1)} s khởi động đầu) · ${upRes.fps.toFixed(1)} fps<br>tổng số cảnh báo: ${upRes.alarms.length} (${upRes.alarms.map(a=>a.toFixed(1)+"s").join(", ")||"không có"})`});
   };
   v.ontimeupdate();
 }

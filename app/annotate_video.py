@@ -47,7 +47,7 @@ def annotate(engine: FallEngine, video: str, out: str, height: int = 720, progre
         raise ValueError(f"Không mở được video: {video}")
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
-    writer, rows, i = None, [], 0
+    writer, rows, i, start_t = None, [], 0, None
     while True:
         ok, bgr = cap.read()
         if not ok:
@@ -61,24 +61,29 @@ def annotate(engine: FallEngine, video: str, out: str, height: int = 720, progre
                 rows.append({"t": round(t, 2), "status": engine.status, "label": st.label,
                              "probs": [round(float(p), 3) for p in st.probs]})
         st = engine.state
+        i += 1
+        if progress and i % 15 == 0:
+            progress(min(i / n, 1.0))
+        if not st.ready:  # mô hình chưa đủ khung hình để dự đoán: không ghi phần khởi động ra video
+            continue
+        if start_t is None:
+            start_t = t
         snap = (engine.status, st.probs, st.baseline_probs, st.t, list(st.timeline), st.latency_ms,
                 list(st.alarm_events), 0)
         scale = height / bgr.shape[0]
         frame = cv2.resize(bgr, (int(bgr.shape[1] * scale), height))
         cv2.rectangle(frame, (0, 0), (frame.shape[1] - 1, frame.shape[0] - 1), COLORS[engine.status], 10)
-        cv2.putText(frame, f"{t:5.1f}s  {st.label if st.ready else 'warmup'}", (16, 40),
+        cv2.putText(frame, f"{t:5.1f}s  {st.label}", (16, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3, cv2.LINE_AA)
         canvas = np.hstack([frame, draw_panel(height, snap, engine.cfg.mode, fps, t, int(t * 3) % 2 == 0)])
         if writer is None:
             writer = cv2.VideoWriter(out, cv2.VideoWriter_fourcc(*"mp4v"), fps, canvas.shape[1::-1])
         writer.write(canvas)
-        i += 1
-        if progress and i % 15 == 0:
-            progress(min(i / n, 1.0))
     cap.release()
     if writer is not None:
         writer.release()
-    return {"fps": fps, "duration": i / fps, "timeline": rows,
+    # start: thời điểm (giây, theo video gốc) của frame đầu tiên trong video kết quả
+    return {"fps": fps, "duration": i / fps, "start": round(start_t or 0.0, 3), "timeline": rows,
             "alarms": [round(x, 2) for x in engine.state.alarm_events]}
 
 
