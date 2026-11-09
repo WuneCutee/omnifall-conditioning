@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fall Monitor · OmniFall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b24; --panel2:#1b2330; --line:#263042; --fg:#e6edf3; --mute:#8b97a8;
+  --ok:#3fb950; --fall:#f0b429; --fallen:#ff5d5d; --alarm:#ff2d2d; --accent:#58a6ff;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 "Be Vietnam Pro",system-ui,sans-serif}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px max(16px,env(safe-area-inset-left));border-bottom:1px solid var(--line)}
+header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.2px}
+header h1 span{color:var(--mute);font-weight:500}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tab{background:none;border:1px solid var(--line);color:var(--mute);padding:7px 14px;border-radius:8px;cursor:pointer;font:inherit}
+.tab.on{background:var(--panel2);color:var(--fg);border-color:#3a4760}
+main{padding:18px max(16px,env(safe-area-inset-left));max-width:1280px;margin:0 auto}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.stage{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border:4px solid var(--line);transition:border-color .2s}
+.stage video{width:100%;height:100%;object-fit:contain}
+.stage .ph{position:absolute;color:var(--mute);text-align:center;padding:20px}
+.badge{position:absolute;left:12px;top:12px;padding:6px 12px;border-radius:8px;font-weight:700;font-size:15px;background:#000a;backdrop-filter:blur(4px)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+button.btn{background:var(--accent);color:#04121f;border:0;padding:9px 16px;border-radius:8px;font:600 14px inherit;font-family:inherit;cursor:pointer}
+button.btn.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
+button.btn:disabled{opacity:.5;cursor:default}
+select{background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit}
+.label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.status{border-radius:10px;padding:14px 16px;font-weight:700;font-size:20px;background:var(--panel2);margin-bottom:14px}
+.status small{display:block;font-weight:500;font-size:13px;color:#ffffffb0;margin-top:2px}
+.bars{display:grid;grid-template-columns:76px 1fr 44px;gap:6px 10px;align-items:center;font-size:13px}
+.bar{height:12px;background:var(--panel2);border-radius:6px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:6px;transition:width .15s}
+.bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:#cfd8e3aa}
+.num{font-family:var(--mono);text-align:right;color:var(--mute)}
+.strip{height:22px;border-radius:6px;background:var(--panel2);display:flex;overflow:hidden;margin-top:6px;cursor:pointer}
+.strip span{height:100%}
+.meta{font-family:var(--mono);font-size:12px;color:var(--mute);margin-top:12px;line-height:1.8}
+.log{font-family:var(--mono);font-size:13px;max-height:160px;overflow:auto;margin:0;padding:0;list-style:none}
+.log li{padding:4px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.log li:hover{color:var(--accent)}
+.drop{border:2px dashed #3a4760;border-radius:12px;padding:34px 16px;text-align:center;color:var(--mute);cursor:pointer}
+.drop.hover{border-color:var(--accent);color:var(--fg)}
+.prog{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;margin-top:12px}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--mute);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;background:var(--c)}
+[hidden]{display:none!important}
+.note{font-size:13px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Fall Monitor <span>· phát hiện té ngã OmniFall</span></h1>
+  <div class="tabs">
+    <button class="tab on" data-tab="cam">Camera realtime</button>
+    <button class="tab" data-tab="up">Upload video</button>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= CAMERA ======================= -->
+  <section id="cam" class="grid">
+    <div class="card">
+      <div class="stage" id="camStage">
+        <video id="camVideo" autoplay playsinline muted></video>
+        <div class="ph" id="camPh">Bấm <b>Bật camera</b> để bắt đầu.<br>Mô hình cần khoảng 5 giây khởi động.</div>
+        <div class="badge" id="camBadge" hidden></div>
+      </div>
+      <div class="row">
+        <button class="btn" id="camStart">Bật camera</button>
+        <button class="btn ghost" id="camStop" disabled>Dừng</button>
+        <button class="btn ghost" id="camReset" disabled>Reset</button>
+        <select id="camDevice"></select>
+        <select id="camMode" title="Chế độ điều kiện hoá"></select>
+      </div>
+    </div>
+    <div class="card" id="camPanel"></div>
+  </section>
+
+  <!-- ======================= UPLOAD ======================= -->
+  <section id="up" hidden>
+    <div class="grid">
+      <div class="card">
+        <div id="upDrop" class="drop">Kéo thả video vào đây hoặc <b>bấm để chọn file</b><br><span class="note">mp4, mov, avi… Mọi frame đều được xử lý, video có nhãn sẽ hiện ở đây.</span></div>
+        <input type="file" id="upFile" accept="video/*" hidden>
+        <div id="upWork" hidden>
+          <div class="note" id="upName"></div>
+          <div class="prog"><i id="upProg"></i></div>
+          <div class="note" id="upMsg" style="margin-top:6px"></div>
+        </div>
+        <div id="upResult" hidden>
+          <div class="stage" style="aspect-ratio:auto"><video id="upVideo" controls playsinline></video></div>
+          <p class="label" style="margin-top:14px">Dòng thời gian dự đoán (bấm để tua)</p>
+          <div class="strip" id="upStrip"></div>
+          <div class="legend" id="upLegend"></div>
+          <div class="row"><button class="btn ghost" id="upAgain">Chạy video khác</button>
+            <select id="upMode" title="Chế độ điều kiện hoá"></select></div>
+        </div>
+      </div>
+      <div class="card" id="upPanel"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const CLS_COLORS = ["#9aa4b2","#f0b429","#ff5d5d","#5fa8d3","#3d7ea6","#b07fd6","#8a4fb5","#7fd28a","#3fb950","#6b7280"];
+const ST_COLORS = {NORMAL:"var(--ok)",FALL:"var(--fall)",FALLEN:"var(--fallen)",ALARM:"var(--alarm)",WARMUP:"#4b5563"};
+const ST_TEXT = {NORMAL:["Bình thường","Không phát hiện té ngã"],FALL:["Đang ngã","Phát hiện hành động fall"],
+  FALLEN:["Nằm sau ngã","Đang theo dõi, chưa đủ lâu để cảnh báo"],ALARM:["CẢNH BÁO: NGÃ","Người nằm sau ngã kéo dài — cần hỗ trợ"],
+  WARMUP:["Khởi động","Đang gom đủ khung hình (~5 s)"]};
+let INFO = {classes:["walk","fall","fallen","sit_down","sitting","lie_down","lying","stand_up","standing","other"],modes:["baseline","rule","hybrid","hmm"],default_mode:"rule"};
+
+/* ---------- panel kết quả dùng chung ---------- */
+function makePanel(el){
+  el.innerHTML = `<div class="status" data-s>—<small>Chưa có dữ liệu</small></div>
+    <p class="label">Xác suất 10 lớp <span style="text-transform:none;letter-spacing:0">(vạch: trước điều kiện hoá)</span></p>
+    <div class="bars" data-bars></div>
+    <p class="label" style="margin-top:16px">30 giây gần nhất</p><div class="strip" data-strip></div>
+    <p class="label" style="margin-top:16px">Các lần cảnh báo</p><ul class="log" data-log><li style="cursor:default">Chưa có</li></ul>
+    <div class="meta" data-meta></div>`;
+  const bars = el.querySelector("[data-bars]");
+  INFO.classes.forEach((c,k)=>{ bars.insertAdjacentHTML("beforeend",
+    `<span>${c}</span><div class="bar"><i style="background:${CLS_COLORS[k]};width:0"></i><b style="left:0"></b></div><span class="num">0%</span>`); });
+  return {
+    el, hist:[], onSeek:null,
+    update(s){
+      const st = el.querySelector("[data-s]"); const [a,b] = ST_TEXT[s.status]||[s.status,""];
+      st.innerHTML = `${a}<small>${b} · nhãn: ${s.label}</small>`; st.style.background = ST_COLORS[s.status];
+      st.style.color = s.status==="FALL"?"#1a1200":"#fff";
+      const is = bars.querySelectorAll("i"), bs = bars.querySelectorAll("b"), ns = bars.querySelectorAll(".num");
+      s.probs.forEach((p,k)=>{ is[k].style.width=(p*100)+"%"; bs[k].style.left=((s.baseline||s.probs)[k]*100)+"%"; ns[k].textContent=Math.round(p*100)+"%"; });
+      if(s.ready){ this.hist.push([s.t, s.probs.indexOf(Math.max(...s.probs))]); }
+      this.hist = this.hist.filter(h=>s.t-h[0]<=30);
+      const strip = el.querySelector("[data-strip]"); strip.innerHTML = "";
+      for(let i=0;i<this.hist.length;i++){ const w=((this.hist[i+1]?.[0]??s.t)-this.hist[i][0])/30*100;
+        strip.insertAdjacentHTML("beforeend",`<span style="width:${w}%;background:${CLS_COLORS[this.hist[i][1]]}"></span>`); }
+      const log = el.querySelector("[data-log]");
+      const key = (s.alarms||[]).join(",");
+      if(log.dataset.key!==key){
+        log.dataset.key = key;
+        log.innerHTML = !key ? '<li style="cursor:default">Chưa có</li>' : s.alarms.map(x=>`<li data-t="${x}">⚠ cảnh báo tại ${x.toFixed(1)} s</li>`).join("");
+        log.querySelectorAll("li").forEach(li=>li.onclick=()=>this.onSeek&&this.onSeek(+li.dataset.t));
+      }
+      if(s.meta!==undefined) el.querySelector("[data-meta]").innerHTML = s.meta;
+    },
+    reset(){ this.hist=[]; el.querySelector("[data-log]").innerHTML='<li style="cursor:default">Chưa có</li>'; }
+  };
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));
+  document.getElementById("cam").hidden = b.dataset.tab!=="cam";
+  document.getElementById("up").hidden = b.dataset.tab!=="up";
+});
+
+function fillModes(sel){ sel.innerHTML = INFO.modes.map(m=>`<option ${m===INFO.default_mode?"selected":""}>${m}</option>`).join(""); }
+
+/* ======================= CAMERA ======================= */
+const camVideo = document.getElementById("camVideo"), camBadge = document.getElementById("camBadge");
+let camPanel, stream=null, ws=null, timer=null, t0=0, inflight=0, sent=0, lastFpsT=0, fpsShow=0;
+const grab = document.createElement("canvas");
+
+async function listCams(){
+  try{
+    const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="videoinput");
+    const sel = document.getElementById("camDevice");
+    sel.innerHTML = devs.map((d,i)=>`<option value="${d.deviceId}">${d.label||"Camera "+(i+1)}</option>`).join("") || "<option>Camera mặc định</option>";
+  }catch(e){}
+}
+
+document.getElementById("camStart").onclick = async ()=>{
+  try{
+    const id = document.getElementById("camDevice").value;
+    stream = await navigator.mediaDevices.getUserMedia({video: id?{deviceId:{exact:id},width:640,height:480}:{width:640,height:480}, audio:false});
+  }catch(e){ alert("Không mở được camera: "+e.message); return; }
+  camVideo.srcObject = stream; document.getElementById("camPh").hidden = true; listCams();
+  const proto = location.protocol==="https:"?"wss":"ws";
+  ws = new WebSocket(`${proto}://${location.host}/ws/camera?mode=${document.getElementById("camMode").value}`);
+  ws.binaryType = "arraybuffer";
+  ws.onmessage = ev=>{
+    inflight = Math.max(0,inflight-1); const s = JSON.parse(ev.data);
+    if(s.error){ alert(s.error); stopCam(); return; }
+    camBadge.hidden=false; camBadge.textContent = `${s.t.toFixed(1)}s · ${s.ready?s.label:"warmup"}`;
+    document.getElementById("camStage").style.borderColor = ST_COLORS[s.status];
+    s.meta = `thiết bị: ${INFO.device} · TTA không gian: ${INFO.spatial_tta?"bật":"tắt"}<br>suy luận: ${s.latency_ms} ms/cửa sổ · gửi: ${fpsShow.toFixed(1)} fps`;
+    camPanel.update(s);
+  };
+  ws.onclose = ()=>stopCam();
+  ws.onopen = ()=>{
+    t0 = performance.now(); camPanel.reset();
+    document.getElementById("camStart").disabled=true; document.getElementById("camStop").disabled=false; document.getElementById("camReset").disabled=false;
+    timer = setInterval(sendFrame, 100);   // ~10 fps; server tự lấy mẫu về 7.5 fps
+  };
+};
+
+function sendFrame(){
+  if(!ws||ws.readyState!==1||!camVideo.videoWidth||inflight>2) return;
+  const w = 384, h = Math.round(camVideo.videoHeight*w/camVideo.videoWidth);
+  grab.width=w; grab.height=h; grab.getContext("2d").drawImage(camVideo,0,0,w,h);
+  const t = (performance.now()-t0)/1000;
+  grab.toBlob(async b=>{
+    if(!b||!ws||ws.readyState!==1) return;
+    const head = new Float64Array([t]); const body = new Uint8Array(await b.arrayBuffer());
+    const buf = new Uint8Array(8+body.length); buf.set(new Uint8Array(head.buffer),0); buf.set(body,8);
+    ws.send(buf); inflight++; sent++;
+    const now=performance.now(); if(now-lastFpsT>1000){ fpsShow=sent*1000/(now-lastFpsT||1); sent=0; lastFpsT=now; }
+  },"image/jpeg",0.8);
+}
+
+function stopCam(){
+  clearInterval(timer); timer=null;
+  if(ws){ try{ws.close()}catch(e){} ws=null; }
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  camVideo.srcObject=null; document.getElementById("camPh").hidden=false; camBadge.hidden=true;
+  document.getElementById("camStage").style.borderColor="";
+  document.getElementById("camStart").disabled=false; document.getElementById("camStop").disabled=true; document.getElementById("camReset").disabled=true;
+}
+document.getElementById("camStop").onclick = stopCam;
+document.getElementById("camReset").onclick = ()=>{ if(ws&&ws.readyState===1){ ws.send(JSON.stringify({reset:true})); t0=performance.now(); camPanel.reset(); } };
+document.getElementById("camMode").onchange = e=>{ if(ws&&ws.readyState===1) ws.send(JSON.stringify({mode:e.target.value})); };
+
+/* ======================= UPLOAD ======================= */
+const drop = document.getElementById("upDrop"), fileIn = document.getElementById("upFile");
+let upPanel, upRes=null;
+drop.onclick = ()=>fileIn.click();
+drop.ondragover = e=>{ e.preventDefault(); drop.classList.add("hover"); };
+drop.ondragleave = ()=>drop.classList.remove("hover");
+drop.ondrop = e=>{ e.preventDefault(); drop.classList.remove("hover"); if(e.dataTransfer.files[0]) startUpload(e.dataTransfer.files[0]); };
+fileIn.onchange = ()=>fileIn.files[0]&&startUpload(fileIn.files[0]);
+document.getElementById("upAgain").onclick = ()=>{ document.getElementById("upResult").hidden=true; drop.hidden=false; fileIn.value=""; };
+
+async function startUpload(f){
+  drop.hidden=true; document.getElementById("upResult").hidden=true; document.getElementById("upWork").hidden=false;
+  document.getElementById("upName").textContent = f.name+" · "+(f.size/1e6).toFixed(1)+" MB";
+  const msg = document.getElementById("upMsg"), prog = document.getElementById("upProg");
+  msg.textContent="Đang tải lên…"; prog.style.width="0";
+  const fd = new FormData(); fd.append("file",f); fd.append("mode",document.getElementById("upMode").value);
+  let job;
+  try{ job = (await (await fetch("/api/upload",{method:"POST",body:fd})).json()).job; }
+  catch(e){ msg.textContent="Lỗi tải lên: "+e.message; drop.hidden=false; return; }
+  const poll = async ()=>{
+    const j = await (await fetch("/api/job/"+job)).json();
+    prog.style.width = (j.progress*100)+"%";
+    if(j.state==="queued") msg.textContent="Đang chờ GPU rảnh…";
+    if(j.state==="running") msg.textContent=`Đang xử lý… ${(j.progress*100).toFixed(0)}%`;
+    if(j.state==="error"){ msg.textContent="Lỗi: "+j.error; drop.hidden=false; return; }
+    if(j.state==="done"){ showResult(j); return; }
+    setTimeout(poll,700);
+  };
+  poll();
+}
+
+function showResult(j){
+  upRes = j.result; document.getElementById("upWork").hidden=true; document.getElementById("upResult").hidden=false;
+  const v = document.getElementById("upVideo"); v.src = j.video+"?"+Date.now();
+  const strip = document.getElementById("upStrip"); strip.innerHTML="";
+  const tl = upRes.timeline, D = upRes.duration;
+  for(let i=0;i<tl.length;i++){ const k=tl[i].probs.indexOf(Math.max(...tl[i].probs));
+    const w=((tl[i+1]?.t??D)-tl[i].t)/D*100; strip.insertAdjacentHTML("beforeend",`<span title="${tl[i].t}s ${INFO.classes[k]}" style="width:${w}%;background:${CLS_COLORS[k]}"></span>`); }
+  const first = tl.length?tl[0].t:0;
+  strip.firstElementChild && (strip.insertAdjacentHTML("afterbegin",`<span style="width:${first/D*100}%;background:#30363d"></span>`));
+  strip.onclick = e=>{ const r=strip.getBoundingClientRect(); v.currentTime=(e.clientX-r.left)/r.width*D; };
+  upPanel.reset(); upPanel.hist=[];
+  upPanel.onSeek = t=>{ v.currentTime=Math.max(0,t-2); v.play(); };
+  v.ontimeupdate = ()=>{
+    const t=v.currentTime; let lo=0,hi=tl.length-1,idx=-1;
+    while(lo<=hi){ const m=(lo+hi)>>1; if(tl[m].t<=t){idx=m;lo=m+1}else hi=m-1; }
+    const r = idx>=0?tl[idx]:null;
+    upPanel.hist = tl.slice(Math.max(0,idx-300),idx+1).filter(x=>t-x.t<=30).map(x=>[x.t,x.probs.indexOf(Math.max(...x.probs))]);
+    if(r) { upPanel.hist.pop(); }
+    upPanel.update({t, ready:!!r, status:r?r.status:"WARMUP", label:r?r.label:"warmup", probs:r?r.probs:new Array(10).fill(0.1),
+      alarms: upRes.alarms.filter(a=>a<=t),
+      meta:`thời lượng: ${D.toFixed(1)} s · ${upRes.fps.toFixed(1)} fps<br>tổng số cảnh báo: ${upRes.alarms.length} (${upRes.alarms.map(a=>a.toFixed(1)+"s").join(", ")||"không có"})`});
+  };
+  v.ontimeupdate();
+}
+
+/* ---------- khởi động ---------- */
+(async()=>{
+  try{ INFO = await (await fetch("/api/info")).json(); }catch(e){}
+  ["camMode","upMode"].forEach(id=>fillModes(document.getElementById(id)));
+  const leg = document.getElementById("upLegend");
+  leg.innerHTML = INFO.classes.map((c,k)=>`<span style="--c:${CLS_COLORS[k]}">${c}</span>`).join("");
+  camPanel = makePanel(document.getElementById("camPanel"));
+  upPanel = makePanel(document.getElementById("upPanel"));
+  listCams();
+})();
+</script>
+</body>
+</html>
