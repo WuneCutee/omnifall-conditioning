@@ -109,17 +109,16 @@ def run_job(job_id: str, src: Path, mode: str):
         job["state"] = "running"
         try:
             UP_ENGINE.cfg.mode = mode
-            raw = src.with_name("annotated_raw.mp4")
-            res = annotate(UP_ENGINE, str(src), str(raw), height=540,
-                           progress=lambda p: job.update(progress=round(p, 3)))
-            out = src.with_name("annotated.mp4")
+            # chỉ dự đoán (không vẽ lên video); giao diện web tự hiển thị nhãn và xác suất
+            res = annotate(UP_ENGINE, str(src), None, progress=lambda p: job.update(progress=round(p, 3)))
+            out = src.with_name("video.mp4")
             ff = shutil.which("ffmpeg")
-            if ff:  # mp4v không phát được trên trình duyệt -> chuyển H.264
-                subprocess.run([ff, "-y", "-loglevel", "error", "-i", str(raw), "-c:v", "libx264",
-                                "-pix_fmt", "yuv420p", "-crf", "23", "-movflags", "+faststart", str(out)], check=True)
-                raw.unlink(missing_ok=True)
+            if ff:  # video gốc, cắt bỏ đoạn mô hình khởi động, mã hoá H.264 để trình duyệt phát được
+                subprocess.run([ff, "-y", "-loglevel", "error", "-ss", str(res["start"]), "-i", str(src),
+                                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "23", "-c:a", "aac",
+                                "-movflags", "+faststart", str(out)], check=True)
             else:
-                raw.rename(out)
+                shutil.copy(src, out); res["start"] = 0.0  # không cắt được: video giữ nguyên từ giây 0
             (src.parent / "result.json").write_text(json.dumps(res), encoding="utf-8")
             job.update(state="done", progress=1.0, result=res)
         except Exception as e:  # báo lỗi cho giao diện thay vì treo
@@ -154,7 +153,7 @@ def job_status(job_id: str):
 
 @app.get("/api/job/{job_id}/video")
 def job_video(job_id: str):
-    p = JOBS_DIR / job_id / "annotated.mp4"
+    p = JOBS_DIR / job_id / "video.mp4"
     if not p.exists():
         raise HTTPException(404)
     return FileResponse(p, media_type="video/mp4")

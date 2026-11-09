@@ -39,8 +39,8 @@ def build_engine(mode: str | None = None, model: str = "ft", alarm_on: float = 1
     return FallEngine(cfg)
 
 
-def annotate(engine: FallEngine, video: str, out: str, height: int = 720, progress=None) -> dict:
-    """Xử lý toàn bộ video, ghi video có nhãn ra `out`. Trả về dòng thời gian dự đoán và các lần cảnh báo."""
+def annotate(engine: FallEngine, video: str, out: str | None, height: int = 720, progress=None) -> dict:
+    """Xử lý toàn bộ video, ghi video có nhãn ra `out` (None = chỉ dự đoán, không ghi video). Trả về dòng thời gian dự đoán và các lần cảnh báo."""
     engine.reset()
     cap = cv2.VideoCapture(video)
     if not cap.isOpened():
@@ -68,6 +68,8 @@ def annotate(engine: FallEngine, video: str, out: str, height: int = 720, progre
             continue
         if start_t is None:
             start_t = t
+        if out is None:
+            continue
         snap = (engine.status, st.probs, st.baseline_probs, st.t, list(st.timeline), st.latency_ms,
                 list(st.alarm_events), 0)
         scale = height / bgr.shape[0]

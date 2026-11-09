@@ -98,7 +98,7 @@ select{background:var(--panel2);color:var(--fg);border:1px solid var(--line);bor
           <div class="note" id="upMsg" style="margin-top:6px"></div>
         </div>
         <div id="upResult" hidden>
-          <div class="stage" style="aspect-ratio:auto"><video id="upVideo" controls playsinline></video></div>
+          <div class="stage" id="upStage" style="aspect-ratio:auto"><video id="upVideo" controls playsinline style="max-height:68vh"></video><div class="badge" id="upBadge" hidden></div></div>
           <p class="label" style="margin-top:14px">Dòng thời gian dự đoán (bấm để tua)</p>
           <div class="strip" id="upStrip"></div>
           <div class="legend" id="upLegend"></div>
@@ -278,6 +278,8 @@ function showResult(j){
     const r = idx>=0?tl[idx]:null;
     upPanel.hist = tl.slice(Math.max(0,idx-300),idx+1).filter(x=>t-x.t<=30).map(x=>[x.t,x.probs.indexOf(Math.max(...x.probs))]);
     if(r) { upPanel.hist.pop(); }
+    document.getElementById("upStage").style.borderColor = r?ST_COLORS[r.status]:"";
+    const bd=document.getElementById("upBadge"); bd.hidden=!r; if(r) bd.textContent=`${t.toFixed(1)}s · ${r.label}`;
     upPanel.update({t, ready:!!r, status:r?r.status:"WARMUP", label:r?r.label:"warmup", probs:r?r.probs:new Array(10).fill(0.1),
       alarms: upRes.alarms.filter(a=>a<=t),
       meta:`thời lượng: ${(D+S).toFixed(1)} s (bỏ ${S.toFixed(1)} s khởi động đầu) · ${upRes.fps.toFixed(1)} fps<br>tổng số cảnh báo: ${upRes.alarms.length} (${upRes.alarms.map(a=>a.toFixed(1)+"s").join(", ")||"không có"})`});
